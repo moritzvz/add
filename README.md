@@ -1,2 +1,2 @@
-# ADD
-Automatic disparity detection (ADD) for algorithmic audits.
+# ADL
+Automatic disparity location (ADL) for algorithmic audits.
