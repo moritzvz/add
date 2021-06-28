@@ -1,2 +1,2 @@
-# ADL
-Automatic disparity location (ADL) for algorithmic audits.
+# ALD
+Automatic Location of Disparities (ALD) for algorithmic audits.
