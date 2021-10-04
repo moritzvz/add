@@ -10,9 +10,9 @@ This repository contains the implementation of 'Automatic Location of Disparitie
 3. Audit report including visualizations saved as PDF in working directory.
 
 # Please consider citing us if you find this helpful for your work:
-`@misc{vonzahn2021,
-    author       = {von Zahn, Moritz and Hinz, Oliver and Feuerriegel, Stefan},
-    title        = {{A data-driven framework for automatic location of disparities in machine learning}},
+`@misc{vonzahn2021,`
+    `author       = {von Zahn, Moritz and Hinz, Oliver and Feuerriegel, Stefan},`
+    `title        = {{A data-driven framework for automatic location of disparities in machine learning}},
     month        = sep,
     year         = 2021,
     version      = {1.0},
