@@ -12,12 +12,10 @@ This repository contains the implementation of 'Automatic Location of Disparitie
 # Citation
 Please consider citing us if you find this helpful for your work:
 ```
-@misc{vonzahn2021,  
+@misc{vonZahn.2021,  
     author       = {von Zahn, Moritz and Hinz, Oliver and Feuerriegel, Stefan},  
-    title        = {{A data-driven framework for automatic location of disparities in machine learning}},  
-    month        = sep,  
+    title        = {A data-driven framework for automatic location of disparities in machine learning},
     year         = 2021,  
-    version      = {1.0},  
     url          = {https://github.com/moritzvz/ald}  
     }
  ```
