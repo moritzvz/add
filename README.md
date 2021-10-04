@@ -5,8 +5,9 @@ This repository contains the implementation of 'Automatic Location of Disparitie
 1. Download the COMPAS or Adult Income data file.
 2. Run main.R
    1. Specify path to data file.
-   2. Set notion of fairness (statistical parity or equalized odds).
-   3. Set ranking type (impact or confidence)
+   2. Select sensitive attributes.
+   3. Set notion of fairness (statistical parity or equalized odds).
+   4. Set ranking type (impact or confidence)
 3. Audit report including visualizations saved as PDF in working directory.
 
 # Citation
