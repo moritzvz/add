@@ -2,7 +2,7 @@
 This repository contains the implementation of 'Automatic Location of Disparities' (ALD) for conducting algorithmic audits.
 
 # Run
-1. Download the COMPAS or Adult Income dataset.
+1. Download the COMPAS or Adult Income data file.
 2. Run main.R
    1. Specify path to data file.
    2. Set notion of fairness (statistical parity or equalized odds).
