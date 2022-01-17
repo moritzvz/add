@@ -15,7 +15,7 @@ Please consider citing us if you find this helpful for your work:
 ```
 @misc{vonZahn.2021,  
     author       = {von Zahn, Moritz and Hinz, Oliver and Feuerriegel, Stefan},  
-    title        = {A data-driven framework for automatic location of disparities in machine learning},
+    title        = {Locating disparities in machine learning},
     year         = 2021,  
     url          = {https://github.com/moritzvz/ald}  
     }
