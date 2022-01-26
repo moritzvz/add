@@ -2,12 +2,11 @@
 This repository contains the implementation of 'Automatic Location of Disparities' (ALD) for conducting algorithmic audits.
 
 # Run
-1. Download the COMPAS or Adult Income data file.
-2. Run main.R
-   1. Specify path to data file.
-   2. Select sensitive attributes.
-   3. Set notion of fairness (statistical parity or equalized odds).
-   4. Set ranking type (confidence or magnitude)
+1. Run main.R
+   1. Specify dataset (default: preprocessed COMPAS dataset).
+   2. Select set of sensitive attributes to consider (default: 'race').
+   3. Set notion of fairness (default: equalized odds).
+   4. Set ranking type (default: confidence)
 3. Audit report including visualizations saved as PDF in working directory.
 
 # Citation
