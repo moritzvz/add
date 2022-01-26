@@ -2,6 +2,17 @@ source("src/disp_calculation.R")
 source("src/visualization.R")
 source("src/misc_methods.R")
 
+
+
+# TODOS
+# statistical parity
+# continuous attributes clean-up
+# package checks / installation if else
+# function comments
+# readme
+# packrat versioning
+
+
 # use partykit
 # install.packages("ggparty")
 # install.packages("partykit")
@@ -14,12 +25,13 @@ library("cowplot")
 library("scales")
 library("stringr")
 
-# set parameters
-set.seed(1)
-n_grp = 3
-ntree <- 25
-alpha <- 0.1
-ranking <- "confidence"
+# PARAMETERS
+set.seed(1)   # random seed
+n_grp = 3     # number of top subgroups to be featured in audit report
+ntree <- 25   # number of search trees in conditional inference (c)forest
+alpha <- 0.1  # maximum threshold for p-value of permutation-based split
+ranking <- "confidence" # ranking mechanism: "confidence" or "magnitude"
+psi_metric = "eo"       # fairness: "sp" or "eo" (statistical parity / equalized odds)
 
 # read in data
 # mydata = read.table("C:/Users/morit/PycharmProjects/FairAI/Data/TreeAlg/adult_census.csv", header=TRUE,sep=",")
@@ -122,142 +134,12 @@ results_df$disparity_magnitude <- round(results_df$disparity_magnitude, 3)
 
 print(head(results_df, n_grp))
 
+
+
 # visualize trees of top n_grp trees 
 for(t in unique(head(results_df$tree_id, n_grp))){
-  # visualize_tree(gettree(partitioning, tree = t))
-  print(t)
+  visualize_tree(t, gettree(partitioning, tree = t), mydata, psi_metric=psi_metric)
 }
-
-
-
-
-
-
-
-
-ct <- gettree(partitioning, tree = 1)
-
-# predict the leaf, append to dataframe, get numbr of leaves
-leaves <- predict(ct, mydata[, !(names(mydata) %in% "error_type")], type = "node")
-mydata$leaf <- leaves
-unique(leaves)
-
-print(ct)
-
-
-#____________________________________________________________________
-# fairness metric (sp vs eo)
-psi_metric = "eo"
-
-# apply split on data
-apply_split = function(cnode, data, side){
-  data$split = kidids_split(split_node(cnode), data)
-  subset = data[data$split == side, ]
-  subset = subset[!is.na(subset$split),]
-  return(subset)
-}
-
-# compute metrics
-cnode = node_party(ct)
-metrics = list()
-
-
-metrics = rec_nodes(cnode, mydata, mydata, psi_metric=psi_metric, first=TRUE)
-
-
-#
-# plot tree
-#
-tree_plot = ggparty(ct) +
-  geom_edge() +
-  geom_edge_label(size = 6) +
-  
-  # inner nodes
-  geom_node_label(mapping = aes(col = "black", fill = get_disp_color(metrics[metrics$node_id == id,]$disparity)),
-                  line_list = list(# aes(label = paste("Subgroup:", id)),
-                    aes(label = paste("n:", metrics[metrics$node_id == id,]$n, "/",
-                                      format(round(metrics[metrics$node_id == id,]$n_rel*100, 1), nsmall = 1), "%")),
-                    aes(label = paste("Disparity:",
-                                      format(round(metrics[metrics$node_id == id,]$disparity, 3), nsmall = 3))),
-                    
-                    aes(label = paste("Split: \"", splitvar, "\""))
-                  ),
-                  line_gpar = list(# list(size = 8, col = "black", fontface = "plain", alignment = "left"),
-                    list(size = 16, col = "black", fontface = "plain", alignment = "left"),
-                    list(size = 16, col = "black", fontface = "plain", alignment = "left"),
-                    list(size = 16, col = "black", fontface = "bold", alignment = "left")
-                  ),
-                  #label.fill = rbPal1(0.1), #"gray",
-                  label.col = "black",
-                  ids = "inner") +
-  
-  # terminal nodes
-  geom_node_label(mapping = aes(col = splitvar, fill = get_disp_color(metrics[metrics$node_id == id,]$disparity)),
-                  line_list = list(# aes(label = paste("Subgroup:", id)),
-                    aes(label = paste("n:", metrics[metrics$node_id == id,]$n, "/",
-                                      format(round(metrics[metrics$node_id == id,]$n_rel*100, 1), nsmall = 1), "%")),
-                    aes(label = paste("Disparity:",
-                                      format(round(metrics[metrics$node_id == id,]$disparity, 3), nsmall = 3)))
-                  ),
-                  line_gpar = list(# list(size = 8, col = "black", fontface = "plain", alignment = "left"),
-                    list(size = 16, col = "black", fontface = "plain", alignment = "left"),
-                    list(size = 16, col = "black", fontface = "plain", alignment = "left")
-                  ),
-                  # label.fill = "green",
-                  label.col = "black",
-                  ids = "terminal") +
-  
-  theme(legend.position = "none")
-
-
-#
-# plot heatmap legend
-#
-heat_leg_data = expand.grid(X=1, Y=(1:100)/100)
-heat_leg_data$Z = (1:100)/100
-
-cst_legend = ggplot(heat_leg_data, aes(X, Y, fill= Z)) + 
-  
-  geom_tile() +
-  
-  scale_fill_gradient2(
-    low = "white",
-    mid = "red",
-    high = "darkviolet",
-    midpoint = 0.3) +
-  
-  scale_y_continuous(name = 
-                       ifelse(psi_metric == "sp", 
-                              expression(paste("Abs. Disparity |", psi[sp], "|")),
-                              expression(paste("Abs. Disparity |", psi[eo], "|"))), limits = c(0,1)) +
-  
-  theme(axis.line=element_blank(),
-        axis.text.y = element_text(size = 16),
-        axis.text.x = element_blank(),
-        axis.ticks = element_blank(),
-        axis.title.y = element_text(hjust = 0.9, size=16),
-        axis.title.x = element_blank(),
-        legend.position = "none",
-        panel.background = element_blank(),
-        panel.border = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        plot.background = element_blank())
-
-
-#
-# show tree + legend
-#
-plot_grid(tree_plot, cst_legend, align="v", rel_widths = c(13/14, 1/14))
-
-
-# TODO: list of conditions (if desired?)
-# partykit:::.list.rules.party(ct)
-# mynode = node_party(ct)
-# thenode = mynode[1][2]
-# split_node(thenode)
-# mydata
-
 
 
 

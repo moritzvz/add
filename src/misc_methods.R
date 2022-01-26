@@ -27,5 +27,16 @@ clean_condition_str <- function(raw_str){
   cleaned_condition <- str_replace_all(cleaned_condition, "\\)", "}")#
   return(cleaned_condition)
 }
-# vectorize
+
+
+# vectorize function "clean_condition_str"
 v_clean_condition_str <- Vectorize(clean_condition_str)
+
+
+# apply split on data
+apply_split = function(cnode, data, side){
+  data$split = kidids_split(split_node(cnode), data)
+  subset = data[data$split == side, ]
+  subset = subset[!is.na(subset$split),]
+  return(subset)
+}
