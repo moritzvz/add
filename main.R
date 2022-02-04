@@ -2,22 +2,6 @@ source("src/disp_calculation.R")
 source("src/visualization.R")
 source("src/misc_methods.R")
 
-
-
-# TODOS
-# statistical parity
-# continuous attributes clean-up
-# package checks / installation if else
-# function comments
-# readme
-# packrat versioning
-
-
-# use partykit
-# install.packages("ggparty")
-# install.packages("partykit")
-# install.packages("gridExtra")
-# install.packages("cowplot")
 library("ggparty")
 library("partykit")
 library("gridExtra")
@@ -31,7 +15,7 @@ n_grp = 3     # number of top subgroups to be featured in audit report
 ntree <- 25   # number of search trees in conditional inference (c)forest
 alpha <- 0.1  # maximum threshold for p-value of permutation-based split
 ranking <- "confidence" # ranking mechanism: "confidence" or "magnitude"
-psi_metric = "eo"       # fairness: "sp" or "eo" (statistical parity / equalized odds)
+psi_metric = "equalized odds" # fairness: "statistical parity" / "equalized odds"
 
 # read in data
 # mydata = read.table("C:/Users/morit/PycharmProjects/FairAI/Data/TreeAlg/adult_census.csv", header=TRUE,sep=",")
@@ -129,18 +113,13 @@ if (ranking == "confidence"){
           "\" is not implemented. Try \"confidence\" or \"magnitude\".", sep=""))
 }
 
-results_df$disparity_confidence <- round(results_df$disparity_confidence, 3)
-results_df$disparity_magnitude <- round(results_df$disparity_magnitude, 3)
-
-print(head(results_df, n_grp))
-
-
-
 # visualize trees of top n_grp trees 
 for(t in unique(head(results_df$tree_id, n_grp))){
   visualize_tree(t, gettree(partitioning, tree = t), mydata, psi_metric=psi_metric)
 }
 
+# create and export audit report
+export_audit_report(results_df, n_grp, psi_metric, ranking)
 
 
 

@@ -32,6 +32,10 @@ get_disp_color = function(disparity){
 
 # visualize given tree
 visualize_tree <- function(t, ct, mydata, psi_metric){
+  # round results
+  results_df$disparity_confidence <- round(results_df$disparity_confidence, 3)
+  results_df$disparity_magnitude <- round(results_df$disparity_magnitude, 3)
+  
   # function to recursively compute metrics for all nodes (not only leaves)
   rec_nodes = function(cnode, data, subset, psi_metric, first=FALSE){
     if(first){
@@ -42,10 +46,10 @@ visualize_tree <- function(t, ct, mydata, psi_metric){
       rest_ids <- setdiff(rownames(data), rownames(subset))
       rest <- data[rest_ids,]
       
-      if(psi_metric=="sp"){
+      if(psi_metric=="statistical parity"){
         psi_computed = compute_stat_par(rest$outcome, subset$outcome)
       }
-      else if(psi_metric=="eo"){
+      else if(psi_metric=="equalized odds"){
         psi_computed = compute_abs_odds(rest$error_type, subset$error_type)
       }
       else{
@@ -154,5 +158,63 @@ visualize_tree <- function(t, ct, mydata, psi_metric){
   # save tree + legend
   plotted_grid <- plot_grid(tree_plot, cst_legend, align="v", rel_widths = c(13/14, 1/14))
   ggsave(filename=paste("output/tree", t,".pdf", sep = ""), scale=2, width=12, height=6)
+}
+
+
+# create an audit report and save it in output folder
+export_audit_report <- function(results_df, n_grp, psi_metric, ranking){
+  # pdf to contain report
+  pdf("output/compas_race_top_n_groups.pdf", page="a4", onefile = FALSE) # 8.3 * 11.7
+  
+  # title
+  title_g <-  textGrob("Audit report", gp=gpar(fontsize=12, fontface="bold"))
+  
+  # description
+  descr <- paste("The following table comprises the", n_grp, "groups most",
+                    "affected by disparate outcomes. Disparate outcomes are", 
+                    "defined by", psi_metric, "and groups are ranked based on",
+                    ranking, "(of the disparity).")
+  descr <- gsub('(.{1,100})(\\s|$)', '\\1\n', descr)
+  descr_g <- textGrob(descr, gp=gpar(fontsize=9))
+  
+  # table of top n_grp groups found
+  out_tab <- head(results_df, n_grp)
+  out_tab$disparity_confidence <- round(out_tab$disparity_confidence, 3)
+  out_tab$disparity_magnitude <- round(out_tab$disparity_magnitude, 3)
+  out_tab$group_size <- paste(as.character(out_tab$group_size), "/", 
+                              round(100*out_tab$group_size / length(mydata$outcome), 2),
+                              "%", sep = " ")
+  out_tab <- out_tab[ , !(names(out_tab) %in% c("tree_id"))]
+  tab_g <- tableGrob(out_tab, theme = ttheme_default(base_size=7, core=list(fg_params=list(hjust=0, x=0.05))),
+                     rows=NULL, cols=gsub("\\_", "\\\n",names(out_tab)))
+  
+  justify <- function(x, hjust="center", vjust="top", draw=FALSE){
+    w <- sum(x$widths)
+    h <- sum(x$heights)
+    xj <- switch(hjust,
+                 center = 0.5,
+                 left = 0.5*w,
+                 right=unit(1,"npc") - 0.5*w)
+    yj <- switch(vjust,
+                 center = 0.5,
+                 bottom = 0.5*h,
+                 top=unit(1,"npc") - 0.5*h)
+    x$vp <- viewport(x=xj, y=yj)
+    if(draw) grid.draw(x)
+    return(x)
+  }
+  
+  margin = unit(0.5, "line")
+  
+  title <- gtable_col('title', grobs = list(title_g, descr_g), 
+                      heights = unit.c(grobHeight(title_g) + 1.2*margin, 
+                                       grobHeight(descr_g) + margin))
+  
+  grid.arrange(justify(title, vjust='bottom'), justify(tab_g))
+  
+  dev.off()
+  
+  
+  
 }
 

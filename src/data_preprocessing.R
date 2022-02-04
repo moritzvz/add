@@ -19,10 +19,6 @@ preprocess_compas_data <- function(check_race=TRUE,
   data$fn <- as.integer(data["Two_yr_Recidivism"] == 1 & data["score_factor"] == 0)
   data$error_type <-  names(data[e_types])[max.col(data[e_types])]
   
-  ## drop non-sensitive attributes
-  #  data <- data[ , !(names(data) %in% c("Misdemeanor", "Number_of_Priors", 
-  #                                      "Two_yr_Recidivism", "score_factor"))]
-  
   if(check_race){
     # build race sensitive attribute
     race_feat <- c("African_American", "Asian", "Hispanic",
