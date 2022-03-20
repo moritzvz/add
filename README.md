@@ -7,7 +7,7 @@ This repository contains the implementation of 'Automatic Location of Disparitie
    2. Select set of sensitive attributes to consider (default: 'race').
    3. Set notion of fairness (default: 'equalized odds').
    4. Set ranking type (default: 'confidence')
-3. Audit report including visualizations saved as PDF in working directory.
+3. Audit report including visualizations saved as PDF in output folder.
 
 # Citation
 Please consider citing us if you find this helpful for your work:
