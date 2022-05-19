@@ -1,3 +1,44 @@
+# read in dataset: COMPAS or Adult data
+get_dataset <- function(name, psi_metric){
+  name <- tolower(name)
+  if(name == "compas"){
+    mydata <- read.table("data/processed/compas_data_preproc.csv", header=TRUE,sep=",")
+  }
+  else if(name == "adult"){
+    mydata <- read.table("data/processed/adult_data_preproc.csv", header=TRUE,sep=",")
+  }
+  else{
+    stop(paste(name, "is not valid; try 'COMPAS' or 'Adult'"))
+  }
+  # build outcome depending on metric
+  if(psi_metric=="equalized odds"){
+    mydata$outcome <- as.integer(mydata["error_type"] == "fp" | mydata["error_type"] == "fn")
+  }
+  else if (psi_metric=="statistical parity"){
+    mydata$outcome <- as.integer(mydata["error_type"] == "tn" | mydata["error_type"] == "fn")
+    # outcome = 1 is the favorable label (i.e., low predicted risk of recidvism)
+  }
+  else{
+    stop(paste(psi_metric,"is not implemented. Try 'statistical parity' or 'equalized odds'."))
+  }
+  # convert non-numeric columns to R factors
+  for (c in colnames(mydata))
+  {
+    if(is.character(mydata[[c]]))
+    {
+      mydata[[c]] <- as.factor(mydata[[c]])
+    }
+  }
+  col_names <- names(mydata)
+  target_col <- c("outcome", "error_type")
+  sensitive_attr <- col_names[!col_names %in% target_col]
+  
+  # order: outcome, sensitive attributes, error_type (equalized odds)
+  mydata <- mydata[, c("outcome", sensitive_attr, "error_type")]
+  return(mydata)
+}
+
+
 # get total number of leaves in all trees of causal forest
 get_total_n_leaves <- function(partitioning, ntree){
   n_leaves_per_t <- numeric(ntree)
@@ -6,31 +47,6 @@ get_total_n_leaves <- function(partitioning, ntree){
   }
   return(sum(n_leaves_per_t))
 }
-
-
-# clean condition string returned by partykit package
-clean_condition_str <- function(raw_str){
-  str_split <- str_split(raw_str, pattern=" & ", simplify = TRUE)
-  cleaned_condition <- ""
-  attr_considered <- character()
-  for(i in length(str_split[,]):1){
-    current_attr <- word(str_split[,i], 1)
-    if(current_attr %in% attr_considered){
-      next
-    }
-    cleaned_condition <- paste(cleaned_condition, str_split[,i], "; ", sep="")   
-    attr_considered <- c(attr_considered, current_attr)
-  }
-  pats <- c('"NA", |, "NA"|"|%')
-  cleaned_condition <- str_replace_all(cleaned_condition, pats, "")
-  cleaned_condition <- str_replace_all(cleaned_condition, "c\\(", "{")
-  cleaned_condition <- str_replace_all(cleaned_condition, "\\)", "}")#
-  return(cleaned_condition)
-}
-
-
-# vectorize function "clean_condition_str"
-v_clean_condition_str <- Vectorize(clean_condition_str)
 
 
 # apply split on data

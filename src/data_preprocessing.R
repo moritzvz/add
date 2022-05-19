@@ -8,9 +8,6 @@ preprocess_compas_data <- function(check_race=TRUE,
   # https://www.propublica.org/article/how-we-analyzed-the-compas-recidiv 
   data <- read.table("data/raw/compas_data.csv", sep = ",", header=TRUE)
   
-  # build binary outcome according to equalized odds: 1 -> error, 0 -> no error
-  data$outcome <- as.integer(data["score_factor"] != data["Two_yr_Recidivism"])
-  
   # built prediction type feature: TP (true positive), TN, FP, FN
   e_types = c("tp", "tn", "fp", "fn")
   data$tn <- as.integer(data["Two_yr_Recidivism"] == 0 & data["score_factor"] == 0)
@@ -45,10 +42,9 @@ preprocess_compas_data <- function(check_race=TRUE,
   
   # select data columns to export
   col_selection <- append(c("race", "age", "gender")[c(check_race, check_age, check_gender)],
-                          c("outcome", "error_type"))
+                          c("error_type"))
   data <- data[col_selection]
   
   write.csv(data, "data/processed/compas_data_preproc.csv", row.names=FALSE)
 }
-
 
