@@ -12,22 +12,15 @@ library("scales")
 library("stringr")
 library("qpdf")
 
-# TODOS
-# continuous attributes clean-up / adult
-# package checks / installation if else
-# function comments
-# readme
-# packrat versioning
-
 # random seed
 set.seed(2022)
 
 # PARAMETERS
-data_name <- "Adult" # COMPAS or Adult
+data_name <- "COMPAS" # COMPAS or Adult
 n_grp <- 3  # number of top subgroups to be featured in audit report
 ntree <- 25  # number of search trees in conditional inference (c)forest
 alpha <- 0.1  # maximum threshold for p-value of permutation-based split
-psi_metric <- "statistical parity"  # fairness: "statistical parity"/"equalized odds"
+psi_metric <- "equalized odds"  # fairness: "statistical parity"/"equalized odds"
 ranking <- "confidence"  # ranking mechanism: "confidence" or "magnitude"
 
 # get preprocessed data
@@ -54,7 +47,6 @@ for(t in 1:ntree){
   leaves <- predict(focal_tree, mydata, type = "node")
   
   for(leaf in unique(leaves)){
-    print(leaf)
     # get condition of leaf (subgroup description)
     condition <- partykit:::.list.rules.party(focal_tree, i = leaf)
     
