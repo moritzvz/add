@@ -23,14 +23,15 @@ library("qpdf")
 set.seed(2022)
 
 # PARAMETERS
+data_name <- "Adult" # COMPAS or Adult
 n_grp <- 3  # number of top subgroups to be featured in audit report
 ntree <- 25  # number of search trees in conditional inference (c)forest
 alpha <- 0.1  # maximum threshold for p-value of permutation-based split
-psi_metric <- "equalized odds"  # fairness: "statistical parity"/"equalized odds"
+psi_metric <- "statistical parity"  # fairness: "statistical parity"/"equalized odds"
 ranking <- "confidence"  # ranking mechanism: "confidence" or "magnitude"
 
 # get preprocessed data
-mydata = get_dataset("COMPAS", psi_metric)  # COMPAS or Adult
+mydata = get_dataset(data_name, psi_metric)
 
 # fit random forest of conditional inference trees
 partitioning <- cforest(outcome ~ .,
@@ -51,8 +52,9 @@ i <- 1
 for(t in 1:ntree){
   focal_tree <- gettree(partitioning, tree = t)
   leaves <- predict(focal_tree, mydata, type = "node")
-
+  
   for(leaf in unique(leaves)){
+    print(leaf)
     # get condition of leaf (subgroup description)
     condition <- partykit:::.list.rules.party(focal_tree, i = leaf)
     
@@ -60,7 +62,9 @@ for(t in 1:ntree){
     leaf_indicator <- leaves == leaf
     
     # compute magnitude and (uncorrected) confidence of disparity
-    disparity_val <- compute_magnit_and_confid(leaf_indicator, mydata, psi_metric)
+    focal_columns <- names(mydata)[names(mydata) %in% c("outcome", "error_type")]
+    disparity_val <- compute_magnit_and_confid(leaf_indicator, 
+                                               mydata[focal_columns], psi_metric)
     
     # record values
     group_size[i] <- sum(leaf_indicator)
@@ -78,11 +82,7 @@ results_df <- clean_results(
 results_df <- correct_pval(results_df)
 results_df <- rank_results(results_df, ranking)
 
-# create and export audit report including visualizations
-export_audit_report(results_df, n_grp, psi_metric, ranking, partitioning, mydata)
-
-
-
-
-
+# create and export audit report including visualizations to folder "output"
+export_audit_report(results_df, n_grp, psi_metric, ranking, partitioning, mydata,
+                    data_name)
 

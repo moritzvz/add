@@ -1,4 +1,4 @@
-# this function preprocesses COMPAS dataset to be examined by ALD w.r.t. equalized odds
+# this function preprocesses COMPAS dataset to be examined by ALD with, e.g., equalized odd
 preprocess_compas_data <- function(check_race=TRUE, 
                                    check_age=FALSE, 
                                    check_gender=FALSE){
@@ -48,3 +48,43 @@ preprocess_compas_data <- function(check_race=TRUE,
   write.csv(data, "data/processed/compas_data_preproc.csv", row.names=FALSE)
 }
 
+# this function preprocesses Adult Income dataset to be examined by ALD w.r.t. statistical parity
+preprocess_adult_data <- function(check_race=TRUE, check_age=TRUE, 
+                                  check_relationship=TRUE, check_sex=TRUE,
+                                  check_marital_status=TRUE){
+  # read in raw data from UCI ML repository
+  # https://archive.ics.uci.edu/ml/datasets/adult
+  col_names <- c("age", "workclass", "fnlwgt", "education", "education-num", 
+                 "marital-status", "occupation", "relationship", "race", "sex", 
+                 "capital-gain", "capital-loss", "hours-per-week", 
+                 "native-country", "income")
+  data1 <- read.table("data/raw/adult.data", sep = ",", header=FALSE)
+  data2 <- read.table("data/raw/adult.test", skip = 1, sep = ",", header=FALSE)
+  data <- rbind(data1, data2)
+  colnames(data) <- col_names
+  
+  # rename columns
+  for(renames in list(c("income", "outcome"), c("native-country", "native_country"),
+                   c("marital-status", "marital_status"))){
+    names(data)[names(data) == renames[1]] <- renames[2]
+  }
+  
+  # outcome as integer (0 vs 1, where 1 is favorable)
+  data$outcome <- as.integer(data["outcome"] == " >50K")
+  
+  # preprocess native country (top 20, rest is "other")
+  top_22_countries <- names(sort(table(data$native_country),decreasing=T)[1:22])
+  top_22_countries[top_22_countries == " ?"] <- "Other"
+  data$native_country[!data$native_country %in% top_22_countries] <- "Other"
+  
+  # keep sensitive attributes and output
+  sens_attri <- c("race", "age", "relationship", "sex", "marital_status")
+  sens_attri <- sens_attri[c(check_race, check_age, check_relationship, 
+                             check_sex, check_marital_status)]
+  
+  # select data columns to export
+  col_selection <- append(c("outcome"), sens_attri)
+  data <- data[col_selection]
+  
+  write.csv(data, "data/processed/adult_data_preproc.csv", row.names=FALSE)
+}

@@ -162,10 +162,21 @@ visualize_tree <- function(t, ct, mydata, psi_metric){
 
 
 # create an audit report and save it in output folder
-export_audit_report <- function(results_df, n_grp, psi_metric, ranking, partitioning, mydata){
+export_audit_report <- function(results_df, n_grp, psi_metric, ranking, 
+                                partitioning, mydata, data_name){
   # build visualizations
+  is_pruned <- ""
   for(t in unique(head(results_df$tree_id, n_grp))){
-    visualize_tree(t, gettree(partitioning, tree = t), mydata, psi_metric=psi_metric)
+    focal_ct <- gettree(partitioning, tree = t)
+    # if tree to plot has >3 depth, prune it accordingly
+    if(depth(focal_ct)>3){
+      depth_of_nodes <- get_node_depths(focal_ct)
+      nodes_to_display <- depth_of_nodes[depth_of_nodes<4]
+      nodes_as_terminal <- as.integer(names(nodes_to_display[nodes_to_display == 3]))
+      focal_ct <- nodeprune(focal_ct, nodes_as_terminal)
+      is_pruned <- "(pruned)"
+    }
+    visualize_tree(t, focal_ct, mydata, psi_metric=psi_metric)
   }
   
   # pdf to contain table overview
@@ -178,7 +189,9 @@ export_audit_report <- function(results_df, n_grp, psi_metric, ranking, partitio
   descr <- paste("The following table comprises the", n_grp, "groups most",
                     "affected by disparate outcomes. Disparate outcomes are", 
                     "defined by", psi_metric, "and groups are ranked based on",
-                    ranking, "(of the disparity).")
+                    ranking, "(of the disparity). Visualizations of",
+                    "trees",is_pruned,"that generated the groups are provided",
+                    "on the following pages.")
   descr <- gsub('(.{1,100})(\\s|$)', '\\1\n', descr)
   descr_g <- textGrob(descr, gp=gpar(fontsize=13.5))
   
@@ -211,6 +224,7 @@ export_audit_report <- function(results_df, n_grp, psi_metric, ranking, partitio
   title <- gtable_col('title', grobs = list(title_g, descr_g), 
                       heights = unit.c(grobHeight(title_g) + 1.2*margin, 
                                        grobHeight(descr_g) + margin))
+  
   grid.arrange(justify(title, vjust='bottom'), justify(tab_g))
   dev.off()
   
@@ -219,7 +233,7 @@ export_audit_report <- function(results_df, n_grp, psi_metric, ranking, partitio
   files_to_merge <- files_to_merge[unlist(lapply(files_to_merge,startsWith,"TEMP"))]
   files_to_merge <- paste("output/", files_to_merge, sep="")
   qpdf::pdf_combine(input = files_to_merge,
-                    output = "output/audit_report_COMPAS.pdf")
+                    output = paste("output/audit_report_",data_name, ".pdf",sep=""))
   sapply(files_to_merge, unlink)
 }
 
