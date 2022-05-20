@@ -75,6 +75,6 @@ results_df <- correct_pval(results_df)
 results_df <- rank_results(results_df, ranking)
 
 # create and export audit report including visualizations to folder "output"
-export_audit_report(results_df, n_grp, psi_metric, ranking, partitioning, mydata,
-                    data_name)
+export_audit_report(results_df, n_grp, psi_metric, ranking, partitioning, 
+                    mydata, data_name)
 
