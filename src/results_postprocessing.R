@@ -2,23 +2,32 @@ library("stringr")
 
 # clean condition string returned by partykit package
 clean_condition_str <- function(raw_str){
-  str_split <- str_split(raw_str, pattern=" & ", simplify = TRUE)
+  str_splits <- str_split(raw_str, pattern=" & ", simplify = TRUE)
   cleaned_condition <- ""
   attr_considered <- character()
-  for(i in length(str_split[,]):1){
-    current_attr <- word(str_split[,i], 1)
+  for(i in length(str_splits[,]):1){
+    current_attr <- word(str_splits[,i], 1)
+    cont_smaller <- grepl("<=", str_splits[,i])
+    cont_larger <- grepl(">", str_splits[,i])
+    if(cont_smaller){
+      current_attr <- paste(current_attr, "<")
+    }
+    if(cont_larger){
+      current_attr <- paste(current_attr, ">")
+    }
     if(current_attr %in% attr_considered){
       next
     }
-    cleaned_condition <- paste(cleaned_condition, str_split[,i], "; ", sep="")   
     attr_considered <- c(attr_considered, current_attr)
+    cleaned_condition <- paste(cleaned_condition, str_splits[,i], "; ", sep="")   
   }
   pats <- c('"NA", |, "NA"|"|%')
   cleaned_condition <- str_replace_all(cleaned_condition, pats, "")
   cleaned_condition <- str_replace_all(cleaned_condition, "c\\(", "{")
-  cleaned_condition <- str_replace_all(cleaned_condition, "\\)", "}")#
-  return(cleaned_condition)
-}
+  cleaned_condition <- str_replace_all(cleaned_condition, "\\)", "}")
+  cleaned_condition <- sapply(strwrap(cleaned_condition, width = 100, simplify = FALSE),
+                              paste, collapse = "\n")
+  return(cleaned_condition)}
 
 
 # vectorize function "clean_condition_str"

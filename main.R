@@ -16,15 +16,16 @@ library("qpdf")
 set.seed(2022)
 
 # PARAMETERS
-data_name <- "COMPAS" # COMPAS or Adult
+data_name <- "Adult" # COMPAS or Adult
 n_grp <- 3  # number of top subgroups to be featured in audit report
 ntree <- 25  # number of search trees in conditional inference (c)forest
 alpha <- 0.1  # maximum threshold for p-value of permutation-based split
-psi_metric <- "equalized odds"  # fairness: "statistical parity"/"equalized odds"
+psi_metric <- "statistical parity"  # fairness: "statistical parity"/"equalized odds"
 ranking <- "confidence"  # ranking mechanism: "confidence" or "magnitude"
 
 # get preprocessed data
-mydata = get_dataset(data_name, psi_metric)
+mydata <- get_dataset(data_name, psi_metric)
+outcome_col <- names(mydata)[names(mydata) %in% c("outcome", "error_type")]
 
 # fit random forest of conditional inference trees
 partitioning <- cforest(outcome ~ .,
@@ -45,18 +46,18 @@ i <- 1
 for(t in 1:ntree){
   focal_tree <- gettree(partitioning, tree = t)
   leaves <- predict(focal_tree, mydata, type = "node")
+  conditions <- partykit:::.list.rules.party(focal_tree, unique(leaves))
   
   for(leaf in unique(leaves)){
     # get condition of leaf (subgroup description)
-    condition <- partykit:::.list.rules.party(focal_tree, i = leaf)
+    condition <- conditions[toString(leaf)]
     
     # get individuals in leaf (subgroup)
     leaf_indicator <- leaves == leaf
     
     # compute magnitude and (uncorrected) confidence of disparity
-    focal_columns <- names(mydata)[names(mydata) %in% c("outcome", "error_type")]
-    disparity_val <- compute_magnit_and_confid(leaf_indicator, 
-                                               mydata[focal_columns], psi_metric)
+      disparity_val <- compute_magnit_and_confid(leaf_indicator, 
+                                               mydata[outcome_col], psi_metric)
     
     # record values
     group_size[i] <- sum(leaf_indicator)
