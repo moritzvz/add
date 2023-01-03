@@ -58,11 +58,11 @@ compute_abs_odds = function(rest_error_type, subset_error_type){
 
 
 # compute magnitude and (uncorrected) confidence for given leaf (subgroup)
-compute_magnit_and_confid <- function(leaf_indicator, mydata, psi_metric){
+compute_magnit_and_confid <- function(leaf_indicator, mydata, psi_metric, outcome){
   outside_indicator <- !leaf_indicator
   
-  if(psi_metric=="equalized odds"){
-    leaf_errors <- get_errors(leaf_indicator, mydata$error_type)
+  if (psi_metric == "equalized odds"){
+    leaf_errors    <- get_errors(leaf_indicator, mydata$error_type)
     outside_errors <- get_errors(outside_indicator, mydata$error_type)
     
     # calculate magnitude of disparity (absolute odds difference)
@@ -82,8 +82,8 @@ compute_magnit_and_confid <- function(leaf_indicator, mydata, psi_metric){
     uncor_p_val <- pchisq(-2*(log(fp_test$p.value) + log(fn_test$p.value)), 
                           df=4, lower.tail=FALSE)  # fisher's method
   }
-  else if(psi_metric=="statistical parity"){
-    leaf_val <- get_outcome_share(leaf_indicator, mydata$outcome, x=1)
+  else if(psi_metric == "statistical parity"){
+    leaf_val    <- get_outcome_share(leaf_indicator, mydata$outcome, x=1)
     outside_val <- get_outcome_share(outside_indicator, mydata$outcome, x=1)
     
     # calculate magnitude of disparity (statistical parity difference)

@@ -43,14 +43,14 @@ get_dataset <- function(name, psi_metric){
 }
 
 
-# get total number of leaves in all trees of causal forest
-get_total_n_leaves <- function(partitioning, ntree){
-  n_leaves_per_t <- numeric(ntree)
-  for(t in 1:ntree){
-    n_leaves_per_t[t] <- width(gettree(partitioning, tree = t)) 
-  }
-  return(sum(n_leaves_per_t))
-}
+# # get total number of leaves in all trees of causal forest
+# get_total_n_leaves <- function(partitioning, ntree){
+#   n_leaves_per_t <- numeric(ntree)
+#   for(t in 1:ntree){
+#     n_leaves_per_t[t] <- width(gettree(partitioning, tree = t)) 
+#   }
+#   return(sum(n_leaves_per_t))
+# }
 
 
 # apply split on data

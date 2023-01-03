@@ -1,0 +1,20 @@
+---
+title: "Vignette"
+output: html_notebook
+---
+
+
+
+```{r}
+ald_audit
+
+file <- here::here("data/processed/compass_data_preproc_eo_sp.csv")
+outcome_variable <- "outcome_sp"
+sensitive_attributes <- "race"
+notion_of_fairness <- "statistical parity"
+ranking_mechanism <- "confidence"
+n_grp <- 3
+ntree <- 25
+alpha <- 0.1
+```
+
