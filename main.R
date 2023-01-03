@@ -28,9 +28,9 @@ mydata <- get_dataset(data_name, psi_metric)
 outcome_col <- names(mydata)[names(mydata) %in% c("outcome", "error_type")]
 
 # fit random forest of conditional inference trees
-partitioning <- cforest(outcome ~ .,
-                        data = mydata[, !(names(mydata) %in% "error_type")], 
-                        ntree = ntree, alpha = alpha)
+partitioning <- partykit::cforest(outcome ~ .,
+                                  data = mydata[, !(names(mydata) %in% "error_type")], 
+                                  ntree = ntree, alpha = alpha)
 
 # prepare vectors for subgroup/leaf results
 n_leaves_total <- get_total_n_leaves(partitioning, ntree)
