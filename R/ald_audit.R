@@ -15,7 +15,9 @@
 #'
 #' @examples
 ald_audit <- function(file,
-                      outcome_variable,
+                      outcome_variable = NULL,
+                      prediction_variable = NULL,
+                      ground_truth_variable = NULL,
                       sensitive_attributes = NULL,
                       notion_of_fairness,
                       ranking_mechanism,
@@ -23,6 +25,7 @@ ald_audit <- function(file,
                       ntree,
                       alpha) {
   
+  reserved_colnames <- c("leaves_", "leaf_indicator_", "outcome", "prediction", "ground_truth", "error_type")
   
   ### Assert inputs
   assertthat::assert_that(is.character(file), length(file) == 1,
@@ -32,24 +35,52 @@ ald_audit <- function(file,
   assertthat::assert_that(file.exists(file),
                           msg = "file doesn't exist")
   
-  assertthat::assert_that(is.character(outcome_variable), length(outcome_variable) == 1,
-                          msg = "outcome_variable must be character(1)")
-  assertthat::assert_that(outcome_variable != "leaves_",
-                          msg = "outcome_variable can't be 'leaves_'")
-  
-  
-  if (!is.null(sensitive_attributes)) {
-    assertthat::assert_that(is.character(sensitive_attributes), length(sensitive_attributes) == 1,
-                            msg = "sensitive_attributes must be character(1)")
-    
-    assertthat::assert_that(any(sensitive_attributes != "leaves_"),
-                            msg = "sensitive_attributes can't contain 'leaves_'")
-  }
   
   assertthat::assert_that(is.character(notion_of_fairness), length(notion_of_fairness) == 1,
                           msg = "notion_of_fairness must be character(1)")
   assertthat::assert_that(notion_of_fairness %in% c("statistical parity", "equalized odds"),
                           msg = "notion_of_fairness must be 'statistical parity' or 'equalized odds'")
+  
+  if (notion_of_fairness == "statistical parity") {
+    assertthat::assert_that(is.character(outcome_variable), length(outcome_variable) == 1,
+                            msg = "outcome_variable must be character(1)")
+    
+    # Only the outcome variable can be named 'outcome'
+    if (outcome_variable != "outcome") {
+      assertthat::assert_that(!outcome_variable %in% reserved_colnames,
+                            msg = paste("outcome_variable can't be any of reserved names:", 
+                                        paste(reserved_colnames, collapse = ", ")))
+    }
+  } else if (notion_of_fairness == "equalized odds") {
+    assertthat::assert_that(is.character(prediction_variable), length(prediction_variable) == 1,
+                            msg = "prediction_variable must be character(1)")
+    
+    # Only the prediction variable can be named 'prediction'
+    if (prediction_variable != "prediction") {
+      assertthat::assert_that(!prediction_variable %in% reserved_colnames,
+                              msg = paste("prediction_variable can't be any of reserved names:", 
+                                          paste(reserved_colnames, collapse = ", ")))
+    }
+    
+    assertthat::assert_that(is.character(ground_truth_variable), length(ground_truth_variable) == 1,
+                            msg = "ground_truth_variable must be character(1)")
+    
+    # Only the ground_truth variable can be named 'ground_truth'
+    if (ground_truth_variable != "ground_truth") {
+      assertthat::assert_that(!ground_truth_variable %in% reserved_colnames,
+                              msg = paste("ground_truth_variable can't be any of reserved names:", 
+                                          paste(reserved_colnames, collapse = ", ")))
+    }
+  }
+  
+  if (!is.null(sensitive_attributes)) {
+    assertthat::assert_that(is.character(sensitive_attributes), length(sensitive_attributes) == 1,
+                            msg = "sensitive_attributes must be character(1)")
+    
+    assertthat::assert_that(any(!sensitive_attributes %in% reserved_colnames),
+                            msg = paste("sensitive_attributes can't be any of reserved names:", 
+                                        paste(reserved_colnames, collapse = ", ")))
+  }
   
   assertthat::assert_that(is.character(ranking_mechanism), length(ranking_mechanism) == 1,
                           msg = "ranking_mechanism must be character(1)")
@@ -69,21 +100,29 @@ ald_audit <- function(file,
   
   ### Rename such that we can easily change function argument names
   # file       <- file
-  outcome    <- outcome_variable
-  sen_attr   <- sensitive_attributes
-  psi_metric <- notion_of_fairness
-  ranking    <- ranking_mechanism
+  outcome      <- outcome_variable
+  prediction   <- prediction_variable
+  ground_truth <- ground_truth_variable
+  sen_attr     <- sensitive_attributes
+  psi_metric   <- notion_of_fairness
+  ranking      <- ranking_mechanism
   # n_grp      <- n_grp
   # ntree      <- ntree
   # alpha      <- alpha
   
   
   ### Load data
-  dataset <- load_data(file, outcome, sen_attr)
+  dataset <- load_data(file              = file, 
+                       outcome           = outcome, 
+                       prediction        = prediction,
+                       ground_truth      = ground_truth,
+                       sen_attr          = sen_attr, 
+                       psi_metric        = psi_metric,
+                       reserved_colnames = reserved_colnames)
   
   
   ### Fit random forest of conditional inference trees
-  cforest_formula <- stats::as.formula(paste0(outcome, " ~ . "))
+  cforest_formula <- stats::as.formula(paste0("outcome ~ ", paste(sen_attr, collapse = " + ")))
   
   partitioning <- partykit::cforest(formula = cforest_formula,
                                     data    = dataset, 
@@ -93,8 +132,28 @@ ald_audit <- function(file,
   ### Analyse unique leaves
   results_df <- analyse_unique_leaves(partitioning = partitioning,
                                       dataset      = dataset,
-                                      outcome      = outcome,
+                                      # outcome      = outcome,
+                                      # prediction   = prediction,
+                                      # ground_truth = ground_truth,
+                                      psi_metric   = psi_metric,
                                       ntree        = ntree)
+  
+  
+  ### Post process
+  results_df <- postprocess_results(results_df = results_df, ranking = ranking)
+  
+  
+  ### Generate report
+  export_audit_report(results_df   = results_df,
+                      n_grp        = n_grp, 
+                      psi_metric   = psi_metric, 
+                      ranking      = ranking, 
+                      partitioning = partitioning, 
+                      mydata       = dataset, 
+                      data_name    = "Name data")
+  
+ 
+  
   
 }
 

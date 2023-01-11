@@ -6,12 +6,17 @@ output: html_notebook
 
 
 ```{r}
-ald_audit
-
 file <- here::here("data/processed/compass_data_preproc_eo_sp.csv")
-outcome_variable <- "outcome_sp"
+# outcome_variable <- "outcome_sp"
+# prediction_variable <- NULL
+# ground_truth_variable <- NULL
+# notion_of_fairness <- "statistical parity"
+outcome_variable <- NULL
+prediction_variable <- "prediction"
+ground_truth_variable <- "ground_truth"
+notion_of_fairness <- "equalized odds"
+
 sensitive_attributes <- "race"
-notion_of_fairness <- "statistical parity"
 ranking_mechanism <- "confidence"
 n_grp <- 3
 ntree <- 25

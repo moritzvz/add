@@ -8,13 +8,17 @@
 #'
 #' @param file character(1)
 #' @param outcome character(1)
-#' @param sen_attr character(1)
+#' @param prediction character(1)
+#' @param ground_truth character(1)
+#' @param sen_attr character()
+#' @param psi_metric character(1) 
+#' @param reserved_colnames character() 
 #'
 #' @return
 #' @export
 #'
 #' @examples
-load_data <- function(file, outcome, sen_attr) {
+load_data <- function(file, outcome, prediction, ground_truth, sen_attr, psi_metric, reserved_colnames) {
   
   ### Read .csv
   dataset <- readr::read_csv(file)
@@ -26,12 +30,40 @@ load_data <- function(file, outcome, sen_attr) {
   
   
   ### Data assertions: outcome
-  assertthat::assert_that(
-    outcome %in% col_names,
-    msg = paste0("The outcome_variable (", outcome, ") is not a column in the dataset"))
-  
-  warning("TO DO: restrictions on outcome variable? Double to integer? Check for NA values?")
-  
+  if (psi_metric == "statistical parity") {
+    assertthat::assert_that(
+      outcome %in% col_names,
+      msg = paste0("The outcome_variable (", outcome, ") is not a column in the dataset"))
+    
+    if (outcome != "outcome") {
+      dataset$outcome <- dataset[[outcome]]
+    }
+    
+    warning("TO DO: restrictions on outcome variable? Double to integer? Check for NA values?")
+  } else if (psi_metric == "equalized odds") {
+    assertthat::assert_that(
+      prediction %in% col_names,
+      msg = paste0("The prediction variable (", prediction, ") is not a column in the dataset"))
+    
+    if (prediction != "prediction") {
+      dataset$prediction <- dataset[[prediction]]
+    }
+    
+    assertthat::assert_that(
+      ground_truth %in% col_names,
+      msg = paste0("The ground truth variable (", ground_truth, ") is not a column in the dataset"))
+    
+    if (ground_truth != "ground_truth") {
+      dataset$ground_truth <- dataset[[ground_truth]]
+    }
+    
+    warning("TO DO: restrictions on prediction and ground truth variables? Double to integer? Check for NA values?")
+    
+    dataset <- dplyr::mutate(dataset, error_type = paste0(dplyr::if_else(ground_truth == 1, "t", "f"), 
+                                                          dplyr::if_else(prediction == 1, "p", "n")))
+    
+    dataset <- dplyr::mutate(dataset, outcome = dplyr::if_else(ground_truth == 1, 0, 1))
+  }
   
   ### Data assertions: sen_attr
   if (!is.null(sen_attr)) {
@@ -41,19 +73,21 @@ load_data <- function(file, outcome, sen_attr) {
       msg = paste0("Some sensitive_attributes are not columns in the dataset: ", 
                    paste(sen_attr[!cols_sa], collapse = ", ")))
     
-    dataset <- dataset[c(outcome, sen_attr)]
+    # Keep all columns
+    # dataset <- dataset[c(outcome, sen_attr)]
   } else {
     sen_attr <- col_names[col_names != outcome]
     
-    assertthat::assert_that(any(sen_attr != "leaves_"),
-                            msg = "sensitive_attributes can't contain 'leaves_'")
+    assertthat::assert_that(any(!sen_attr %in% reserved_colnames),
+                            msg = paste("sensitive_attributes can't be any of reserved names:", 
+                                        paste(reserved_colnames, collapse = ", ")))
   }
   
   cols_chr <- purrr::map_lgl(dataset, is.character)
   cols_chr <- names(cols_chr[cols_chr])
   
   # partykit::cforest doesn't allow characters, they have to be factors
-  dataset <- dplyr::mutate(dataset, dplyr::across(cols_chr, ~ as.factor(.)))
+  dataset <- dplyr::mutate(dataset, dplyr::across(tidyselect::all_of(cols_chr), ~ as.factor(.)))
   warning("TO DO: restrictions on sensitive attributes?")
   
   
@@ -62,3 +96,4 @@ load_data <- function(file, outcome, sen_attr) {
   
   dataset
 }
+
