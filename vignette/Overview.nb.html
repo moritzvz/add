@@ -1754,147 +1754,19 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxkX2F1ZGl0XG5gYGAifQ== -->
-<pre class="r"><code>ald_audit</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc291cmNlKGhlcmU6OmhlcmUoXCJSL2FsZF9hdWRpdC5SXCIpKVxuc291cmNlKGhlcmU6OmhlcmUoXCJSL2FuYWx5c2VfdW5pcXVlX2xlYXZlcy5SXCIpKVxuc291cmNlKGhlcmU6OmhlcmUoXCJSL2F1ZGl0X3JlcG9ydC5SXCIpKVxuc291cmNlKGhlcmU6OmhlcmUoXCJSL2xvYWRfZGF0YS5SXCIpKVxuc291cmNlKGhlcmU6OmhlcmUoXCJSL3Bvc3Rwcm9jZXNzLlJcIikpXG5gYGAifQ== -->
+<pre class="r"><code>source(here::here(&quot;R/ald_audit.R&quot;))
+source(here::here(&quot;R/analyse_unique_leaves.R&quot;))
+source(here::here(&quot;R/audit_report.R&quot;))
+source(here::here(&quot;R/load_data.R&quot;))
+source(here::here(&quot;R/postprocess.R&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiZnVuY3Rpb24oZmlsZSxcbiAgICAgICAgICAgICAgICAgICAgICBvdXRjb21lX3ZhcmlhYmxlID0gTlVMTCxcbiAgICAgICAgICAgICAgICAgICAgICBwcmVkaWN0aW9uX3ZhcmlhYmxlID0gTlVMTCxcbiAgICAgICAgICAgICAgICAgICAgICBncm91bmRfdHJ1dGhfdmFyaWFibGUgPSBOVUxMLFxuICAgICAgICAgICAgICAgICAgICAgIHNlbnNpdGl2ZV9hdHRyaWJ1dGVzID0gTlVMTCxcbiAgICAgICAgICAgICAgICAgICAgICBub3Rpb25fb2ZfZmFpcm5lc3MsXG4gICAgICAgICAgICAgICAgICAgICAgcmFua2luZ19tZWNoYW5pc20sXG4gICAgICAgICAgICAgICAgICAgICAgbl9ncnAsXG4gICAgICAgICAgICAgICAgICAgICAgbnRyZWUsXG4gICAgICAgICAgICAgICAgICAgICAgYWxwaGEpIHtcbiAgXG4gIHJlc2VydmVkX2NvbG5hbWVzIDwtIGMoXCJsZWF2ZXNfXCIsIFwibGVhZl9pbmRpY2F0b3JfXCIsIFwib3V0Y29tZVwiLCBcInByZWRpY3Rpb25cIiwgXCJncm91bmRfdHJ1dGhcIiwgXCJlcnJvcl90eXBlXCIpXG4gIFxuICAjIyMgQXNzZXJ0IGlucHV0c1xuICBhc3NlcnR0aGF0Ojphc3NlcnRfdGhhdChpcy5jaGFyYWN0ZXIoZmlsZSksIGxlbmd0aChmaWxlKSA9PSAxLFxuICAgICAgICAgICAgICAgICAgICAgICAgICBtc2cgPSBcImZpbGUgbXVzdCBiZSBjaGFyYWN0ZXIoMSlcIilcbiAgYXNzZXJ0dGhhdDo6YXNzZXJ0X3RoYXQodG9sb3dlcihzdHJpbmdyOjpzdHJfc3ViKGZpbGUsIC00LCAtMSkpID09IFwiLmNzdlwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICBtc2cgPSBcImZpbGUgbXVzdCBiZSBhIC5jc3ZcIilcbiAgYXNzZXJ0dGhhdDo6YXNzZXJ0X3RoYXQoZmlsZS5leGlzdHMoZmlsZSksXG4gICAgICAgICAgICAgICAgICAgICAgICAgIG1zZyA9IFwiZmlsZSBkb2Vzbid0IGV4aXN0XCIpXG4gIFxuICBcbiAgYXNzZXJ0dGhhdDo6YXNzZXJ0X3RoYXQoaXMuY2hhcmFjdGVyKG5vdGlvbl9vZl9mYWlybmVzcyksIGxlbmd0aChub3Rpb25fb2ZfZmFpcm5lc3MpID09IDEsXG4gICAgICAgICAgICAgICAgICAgICAgICAgIG1zZyA9IFwibm90aW9uX29mX2ZhaXJuZXNzIG11c3QgYmUgY2hhcmFjdGVyKDEpXCIpXG4gIGFzc2VydHRoYXQ6OmFzc2VydF90aGF0KG5vdGlvbl9vZl9mYWlybmVzcyAlaW4lIGMoXCJzdGF0aXN0aWNhbCBwYXJpdHlcIiwgXCJlcXVhbGl6ZWQgb2Rkc1wiKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgbXNnID0gXCJub3Rpb25fb2ZfZmFpcm5lc3MgbXVzdCBiZSAnc3RhdGlzdGljYWwgcGFyaXR5JyBvciAnZXF1YWxpemVkIG9kZHMnXCIpXG4gIFxuICBpZiAobm90aW9uX29mX2ZhaXJuZXNzID09IFwic3RhdGlzdGljYWwgcGFyaXR5XCIpIHtcbiAgICBhc3NlcnR0aGF0Ojphc3NlcnRfdGhhdChpcy5jaGFyYWN0ZXIob3V0Y29tZV92YXJpYWJsZSksIGxlbmd0aChvdXRjb21lX3ZhcmlhYmxlKSA9PSAxLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1zZyA9IFwib3V0Y29tZV92YXJpYWJsZSBtdXN0IGJlIGNoYXJhY3RlcigxKVwiKVxuICAgIFxuICAgICMgT25seSB0aGUgb3V0Y29tZSB2YXJpYWJsZSBjYW4gYmUgbmFtZWQgJ291dGNvbWUnXG4gICAgaWYgKG91dGNvbWVfdmFyaWFibGUgIT0gXCJvdXRjb21lXCIpIHtcbiAgICAgIGFzc2VydHRoYXQ6OmFzc2VydF90aGF0KCFvdXRjb21lX3ZhcmlhYmxlICVpbiUgcmVzZXJ2ZWRfY29sbmFtZXMsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgbXNnID0gcGFzdGUoXCJvdXRjb21lX3ZhcmlhYmxlIGNhbid0IGJlIGFueSBvZiByZXNlcnZlZCBuYW1lczpcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGFzdGUocmVzZXJ2ZWRfY29sbmFtZXMsIGNvbGxhcHNlID0gXCIsIFwiKSkpXG4gICAgfVxuICB9IGVsc2UgaWYgKG5vdGlvbl9vZl9mYWlybmVzcyA9PSBcImVxdWFsaXplZCBvZGRzXCIpIHtcbiAgICBhc3NlcnR0aGF0Ojphc3NlcnRfdGhhdChpcy5jaGFyYWN0ZXIocHJlZGljdGlvbl92YXJpYWJsZSksIGxlbmd0aChwcmVkaWN0aW9uX3ZhcmlhYmxlKSA9PSAxLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1zZyA9IFwicHJlZGljdGlvbl92YXJpYWJsZSBtdXN0IGJlIGNoYXJhY3RlcigxKVwiKVxuICAgIFxuICAgICMgT25seSB0aGUgcHJlZGljdGlvbiB2YXJpYWJsZSBjYW4gYmUgbmFtZWQgJ3ByZWRpY3Rpb24nXG4gICAgaWYgKHByZWRpY3Rpb25fdmFyaWFibGUgIT0gXCJwcmVkaWN0aW9uXCIpIHtcbiAgICAgIGFzc2VydHRoYXQ6OmFzc2VydF90aGF0KCFwcmVkaWN0aW9uX3ZhcmlhYmxlICVpbiUgcmVzZXJ2ZWRfY29sbmFtZXMsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBtc2cgPSBwYXN0ZShcInByZWRpY3Rpb25fdmFyaWFibGUgY2FuJ3QgYmUgYW55IG9mIHJlc2VydmVkIG5hbWVzOlwiLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBhc3RlKHJlc2VydmVkX2NvbG5hbWVzLCBjb2xsYXBzZSA9IFwiLCBcIikpKVxuICAgIH1cbiAgICBcbiAgICBhc3NlcnR0aGF0Ojphc3NlcnRfdGhhdChpcy5jaGFyYWN0ZXIoZ3JvdW5kX3RydXRoX3ZhcmlhYmxlKSwgbGVuZ3RoKGdyb3VuZF90cnV0aF92YXJpYWJsZSkgPT0gMSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBtc2cgPSBcImdyb3VuZF90cnV0aF92YXJpYWJsZSBtdXN0IGJlIGNoYXJhY3RlcigxKVwiKVxuICAgIFxuICAgICMgT25seSB0aGUgZ3JvdW5kX3RydXRoIHZhcmlhYmxlIGNhbiBiZSBuYW1lZCAnZ3JvdW5kX3RydXRoJ1xuICAgIGlmIChncm91bmRfdHJ1dGhfdmFyaWFibGUgIT0gXCJncm91bmRfdHJ1dGhcIikge1xuICAgICAgYXNzZXJ0dGhhdDo6YXNzZXJ0X3RoYXQoIWdyb3VuZF90cnV0aF92YXJpYWJsZSAlaW4lIHJlc2VydmVkX2NvbG5hbWVzLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbXNnID0gcGFzdGUoXCJncm91bmRfdHJ1dGhfdmFyaWFibGUgY2FuJ3QgYmUgYW55IG9mIHJlc2VydmVkIG5hbWVzOlwiLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBhc3RlKHJlc2VydmVkX2NvbG5hbWVzLCBjb2xsYXBzZSA9IFwiLCBcIikpKVxuICAgIH1cbiAgfVxuICBcbiAgaWYgKCFpcy5udWxsKHNlbnNpdGl2ZV9hdHRyaWJ1dGVzKSkge1xuICAgIGFzc2VydHRoYXQ6OmFzc2VydF90aGF0KGlzLmNoYXJhY3RlcihzZW5zaXRpdmVfYXR0cmlidXRlcyksIGxlbmd0aChzZW5zaXRpdmVfYXR0cmlidXRlcykgPT0gMSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBtc2cgPSBcInNlbnNpdGl2ZV9hdHRyaWJ1dGVzIG11c3QgYmUgY2hhcmFjdGVyKDEpXCIpXG4gICAgXG4gICAgYXNzZXJ0dGhhdDo6YXNzZXJ0X3RoYXQoYW55KCFzZW5zaXRpdmVfYXR0cmlidXRlcyAlaW4lIHJlc2VydmVkX2NvbG5hbWVzKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBtc2cgPSBwYXN0ZShcInNlbnNpdGl2ZV9hdHRyaWJ1dGVzIGNhbid0IGJlIGFueSBvZiByZXNlcnZlZCBuYW1lczpcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGFzdGUocmVzZXJ2ZWRfY29sbmFtZXMsIGNvbGxhcHNlID0gXCIsIFwiKSkpXG4gIH1cbiAgXG4gIGFzc2VydHRoYXQ6OmFzc2VydF90aGF0KGlzLmNoYXJhY3RlcihyYW5raW5nX21lY2hhbmlzbSksIGxlbmd0aChyYW5raW5nX21lY2hhbmlzbSkgPT0gMSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgbXNnID0gXCJyYW5raW5nX21lY2hhbmlzbSBtdXN0IGJlIGNoYXJhY3RlcigxKVwiKVxuICBhc3NlcnR0aGF0Ojphc3NlcnRfdGhhdChyYW5raW5nX21lY2hhbmlzbSAlaW4lIGMoXCJjb25maWRlbmNlXCIsIFwibWFnbml0dWRlXCIpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICBtc2cgPSBcInJhbmtpbmdfbWVjaGFuaXNtIG11c3QgYmUgJ2NvbmZpZGVuY2UnIG9yICdtYWduaXR1ZGUnXCIpXG4gIFxuICB3YXJuaW5nKFwiVE8gRE86IHNldCBsaW1pdHMgZm9yIG5fZ3JwLCBuX3RyZWUgYW5kIGFscGhhXCIpXG4gIGFzc2VydHRoYXQ6OmFzc2VydF90aGF0KGlzLm51bWVyaWMobl9ncnApLCBsZW5ndGgobl9ncnApID09IDEsXG4gICAgICAgICAgICAgICAgICAgICAgICAgIG1zZyA9IFwibl9ncnAgbXVzdCBiZSBudW1lcmljKDEpXCIpXG4gIFxuICBhc3NlcnR0aGF0Ojphc3NlcnRfdGhhdChpcy5udW1lcmljKG50cmVlKSwgbGVuZ3RoKG50cmVlKSA9PSAxLFxuICAgICAgICAgICAgICAgICAgICAgICAgICBtc2cgPSBcIm50cmVlIG11c3QgYmUgbnVtZXJpYygxKVwiKVxuICBcbiAgYXNzZXJ0dGhhdDo6YXNzZXJ0X3RoYXQoaXMubnVtZXJpYyhhbHBoYSksIGxlbmd0aChhbHBoYSkgPT0gMSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgbXNnID0gXCJhbHBoYSBtdXN0IGJlIG51bWVyaWMoMSlcIilcblxuICBcbiAgIyMjIFJlbmFtZSBzdWNoIHRoYXQgd2UgY2FuIGVhc2lseSBjaGFuZ2UgZnVuY3Rpb24gYXJndW1lbnQgbmFtZXNcbiAgIyBmaWxlICAgICAgIDwtIGZpbGVcbiAgb3V0Y29tZSAgICAgIDwtIG91dGNvbWVfdmFyaWFibGVcbiAgcHJlZGljdGlvbiAgIDwtIHByZWRpY3Rpb25fdmFyaWFibGVcbiAgZ3JvdW5kX3RydXRoIDwtIGdyb3VuZF90cnV0aF92YXJpYWJsZVxuICBzZW5fYXR0ciAgICAgPC0gc2Vuc2l0aXZlX2F0dHJpYnV0ZXNcbiAgcHNpX21ldHJpYyAgIDwtIG5vdGlvbl9vZl9mYWlybmVzc1xuICByYW5raW5nICAgICAgPC0gcmFua2luZ19tZWNoYW5pc21cbiAgIyBuX2dycCAgICAgIDwtIG5fZ3JwXG4gICMgbnRyZWUgICAgICA8LSBudHJlZVxuICAjIGFscGhhICAgICAgPC0gYWxwaGFcbiAgXG4gIFxuICAjIyMgTG9hZCBkYXRhXG4gIGRhdGFzZXQgPC0gbG9hZF9kYXRhKGZpbGUgICAgICAgICAgICAgID0gZmlsZSwgXG4gICAgICAgICAgICAgICAgICAgICAgIG91dGNvbWUgICAgICAgICAgID0gb3V0Y29tZSwgXG4gICAgICAgICAgICAgICAgICAgICAgIHByZWRpY3Rpb24gICAgICAgID0gcHJlZGljdGlvbixcbiAgICAgICAgICAgICAgICAgICAgICAgZ3JvdW5kX3RydXRoICAgICAgPSBncm91bmRfdHJ1dGgsXG4gICAgICAgICAgICAgICAgICAgICAgIHNlbl9hdHRyICAgICAgICAgID0gc2VuX2F0dHIsIFxuICAgICAgICAgICAgICAgICAgICAgICBwc2lfbWV0cmljICAgICAgICA9IHBzaV9tZXRyaWMsXG4gICAgICAgICAgICAgICAgICAgICAgIHJlc2VydmVkX2NvbG5hbWVzID0gcmVzZXJ2ZWRfY29sbmFtZXMpXG4gIFxuICBcbiAgIyMjIEZpdCByYW5kb20gZm9yZXN0IG9mIGNvbmRpdGlvbmFsIGluZmVyZW5jZSB0cmVlc1xuICBjZm9yZXN0X2Zvcm11bGEgPC0gc3RhdHM6OmFzLmZvcm11bGEocGFzdGUwKFwib3V0Y29tZSB+IFwiLCBwYXN0ZShzZW5fYXR0ciwgY29sbGFwc2UgPSBcIiArIFwiKSkpXG4gIFxuICBwYXJ0aXRpb25pbmcgPC0gcGFydHlraXQ6OmNmb3Jlc3QoZm9ybXVsYSA9IGNmb3Jlc3RfZm9ybXVsYSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgICAgPSBkYXRhc2V0LCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG50cmVlICAgPSBudHJlZSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhbHBoYSAgID0gYWxwaGEpXG4gIFxuICAjIyMgQW5hbHlzZSB1bmlxdWUgbGVhdmVzXG4gIHJlc3VsdHNfZGYgPC0gYW5hbHlzZV91bmlxdWVfbGVhdmVzKHBhcnRpdGlvbmluZyA9IHBhcnRpdGlvbmluZyxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YXNldCAgICAgID0gZGF0YXNldCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb3V0Y29tZSAgICAgID0gb3V0Y29tZSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcHJlZGljdGlvbiAgID0gcHJlZGljdGlvbixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ3JvdW5kX3RydXRoID0gZ3JvdW5kX3RydXRoLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwc2lfbWV0cmljICAgPSBwc2lfbWV0cmljLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBudHJlZSAgICAgICAgPSBudHJlZSlcbiAgXG4gIFxuICAjIyMgUG9zdCBwcm9jZXNzXG4gIHJlc3VsdHNfZGYgPC0gcG9zdHByb2Nlc3NfcmVzdWx0cyhyZXN1bHRzX2RmID0gcmVzdWx0c19kZiwgcmFua2luZyA9IHJhbmtpbmcpXG4gIFxuICBcbiAgIyMjIEdlbmVyYXRlIHJlcG9ydFxuICBleHBvcnRfYXVkaXRfcmVwb3J0XG4gIFxuICBcbn1cbiJ9 -->
-<pre><code>function(file,
-                      outcome_variable = NULL,
-                      prediction_variable = NULL,
-                      ground_truth_variable = NULL,
-                      sensitive_attributes = NULL,
-                      notion_of_fairness,
-                      ranking_mechanism,
-                      n_grp,
-                      ntree,
-                      alpha) {
-  
-  reserved_colnames &lt;- c(&quot;leaves_&quot;, &quot;leaf_indicator_&quot;, &quot;outcome&quot;, &quot;prediction&quot;, &quot;ground_truth&quot;, &quot;error_type&quot;)
-  
-  ### Assert inputs
-  assertthat::assert_that(is.character(file), length(file) == 1,
-                          msg = &quot;file must be character(1)&quot;)
-  assertthat::assert_that(tolower(stringr::str_sub(file, -4, -1)) == &quot;.csv&quot;,
-                          msg = &quot;file must be a .csv&quot;)
-  assertthat::assert_that(file.exists(file),
-                          msg = &quot;file doesn&#39;t exist&quot;)
-  
-  
-  assertthat::assert_that(is.character(notion_of_fairness), length(notion_of_fairness) == 1,
-                          msg = &quot;notion_of_fairness must be character(1)&quot;)
-  assertthat::assert_that(notion_of_fairness %in% c(&quot;statistical parity&quot;, &quot;equalized odds&quot;),
-                          msg = &quot;notion_of_fairness must be &#39;statistical parity&#39; or &#39;equalized odds&#39;&quot;)
-  
-  if (notion_of_fairness == &quot;statistical parity&quot;) {
-    assertthat::assert_that(is.character(outcome_variable), length(outcome_variable) == 1,
-                            msg = &quot;outcome_variable must be character(1)&quot;)
-    
-    # Only the outcome variable can be named &#39;outcome&#39;
-    if (outcome_variable != &quot;outcome&quot;) {
-      assertthat::assert_that(!outcome_variable %in% reserved_colnames,
-                            msg = paste(&quot;outcome_variable can&#39;t be any of reserved names:&quot;, 
-                                        paste(reserved_colnames, collapse = &quot;, &quot;)))
-    }
-  } else if (notion_of_fairness == &quot;equalized odds&quot;) {
-    assertthat::assert_that(is.character(prediction_variable), length(prediction_variable) == 1,
-                            msg = &quot;prediction_variable must be character(1)&quot;)
-    
-    # Only the prediction variable can be named &#39;prediction&#39;
-    if (prediction_variable != &quot;prediction&quot;) {
-      assertthat::assert_that(!prediction_variable %in% reserved_colnames,
-                              msg = paste(&quot;prediction_variable can&#39;t be any of reserved names:&quot;, 
-                                          paste(reserved_colnames, collapse = &quot;, &quot;)))
-    }
-    
-    assertthat::assert_that(is.character(ground_truth_variable), length(ground_truth_variable) == 1,
-                            msg = &quot;ground_truth_variable must be character(1)&quot;)
-    
-    # Only the ground_truth variable can be named &#39;ground_truth&#39;
-    if (ground_truth_variable != &quot;ground_truth&quot;) {
-      assertthat::assert_that(!ground_truth_variable %in% reserved_colnames,
-                              msg = paste(&quot;ground_truth_variable can&#39;t be any of reserved names:&quot;, 
-                                          paste(reserved_colnames, collapse = &quot;, &quot;)))
-    }
-  }
-  
-  if (!is.null(sensitive_attributes)) {
-    assertthat::assert_that(is.character(sensitive_attributes), length(sensitive_attributes) == 1,
-                            msg = &quot;sensitive_attributes must be character(1)&quot;)
-    
-    assertthat::assert_that(any(!sensitive_attributes %in% reserved_colnames),
-                            msg = paste(&quot;sensitive_attributes can&#39;t be any of reserved names:&quot;, 
-                                        paste(reserved_colnames, collapse = &quot;, &quot;)))
-  }
-  
-  assertthat::assert_that(is.character(ranking_mechanism), length(ranking_mechanism) == 1,
-                          msg = &quot;ranking_mechanism must be character(1)&quot;)
-  assertthat::assert_that(ranking_mechanism %in% c(&quot;confidence&quot;, &quot;magnitude&quot;),
-                          msg = &quot;ranking_mechanism must be &#39;confidence&#39; or &#39;magnitude&#39;&quot;)
-  
-  warning(&quot;TO DO: set limits for n_grp, n_tree and alpha&quot;)
-  assertthat::assert_that(is.numeric(n_grp), length(n_grp) == 1,
-                          msg = &quot;n_grp must be numeric(1)&quot;)
-  
-  assertthat::assert_that(is.numeric(ntree), length(ntree) == 1,
-                          msg = &quot;ntree must be numeric(1)&quot;)
-  
-  assertthat::assert_that(is.numeric(alpha), length(alpha) == 1,
-                          msg = &quot;alpha must be numeric(1)&quot;)
-
-  
-  ### Rename such that we can easily change function argument names
-  # file       &lt;- file
-  outcome      &lt;- outcome_variable
-  prediction   &lt;- prediction_variable
-  ground_truth &lt;- ground_truth_variable
-  sen_attr     &lt;- sensitive_attributes
-  psi_metric   &lt;- notion_of_fairness
-  ranking      &lt;- ranking_mechanism
-  # n_grp      &lt;- n_grp
-  # ntree      &lt;- ntree
-  # alpha      &lt;- alpha
-  
-  
-  ### Load data
-  dataset &lt;- load_data(file              = file, 
-                       outcome           = outcome, 
-                       prediction        = prediction,
-                       ground_truth      = ground_truth,
-                       sen_attr          = sen_attr, 
-                       psi_metric        = psi_metric,
-                       reserved_colnames = reserved_colnames)
-  
-  
-  ### Fit random forest of conditional inference trees
-  cforest_formula &lt;- stats::as.formula(paste0(&quot;outcome ~ &quot;, paste(sen_attr, collapse = &quot; + &quot;)))
-  
-  partitioning &lt;- partykit::cforest(formula = cforest_formula,
-                                    data    = dataset, 
-                                    ntree   = ntree, 
-                                    alpha   = alpha)
-  
-  ### Analyse unique leaves
-  results_df &lt;- analyse_unique_leaves(partitioning = partitioning,
-                                      dataset      = dataset,
-                                      outcome      = outcome,
-                                      prediction   = prediction,
-                                      ground_truth = ground_truth,
-                                      psi_metric   = psi_metric,
-                                      ntree        = ntree)
-  
-  
-  ### Post process
-  results_df &lt;- postprocess_results(results_df = results_df, ranking = ranking)
-  
-  
-  ### Generate report
-  export_audit_report
-  
-  
-}</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmlsZSA8LSBoZXJlOjpoZXJlKFwiZGF0YS9wcm9jZXNzZWQvY29tcGFzc19kYXRhX3ByZXByb2NfZW9fc3AuY3N2XCIpXG4jIG91dGNvbWVfdmFyaWFibGUgPC0gXCJvdXRjb21lX3NwXCJcbiMgcHJlZGljdGlvbl92YXJpYWJsZSA8LSBOVUxMXG4jIGdyb3VuZF90cnV0aF92YXJpYWJsZSA8LSBOVUxMXG4jIG5vdGlvbl9vZl9mYWlybmVzcyA8LSBcInN0YXRpc3RpY2FsIHBhcml0eVwiXG5vdXRjb21lX3ZhcmlhYmxlIDwtIE5VTExcbnByZWRpY3Rpb25fdmFyaWFibGUgPC0gXCJwcmVkaWN0aW9uXCJcbmdyb3VuZF90cnV0aF92YXJpYWJsZSA8LSBcImdyb3VuZF90cnV0aFwiXG5ub3Rpb25fb2ZfZmFpcm5lc3MgPC0gXCJlcXVhbGl6ZWQgb2Rkc1wiXG5cbnNlbnNpdGl2ZV9hdHRyaWJ1dGVzIDwtIFwicmFjZVwiXG5yYW5raW5nX21lY2hhbmlzbSA8LSBcImNvbmZpZGVuY2VcIlxubl9ncnAgPC0gM1xubnRyZWUgPC0gMjVcbmFscGhhIDwtIDAuMVxuYGBgIn0= -->
-<pre class="r"><code>file &lt;- here::here(&quot;data/processed/compass_data_preproc_eo_sp.csv&quot;)
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmlsZSA8LSBoZXJlOjpoZXJlKFwiZGF0YS9wcm9jZXNzZWQvY29tcGFzc19kYXRhX3ByZXByb2NfcHJlZGljdGlvbl9ncm91bmRfdHJ1dGguY3N2XCIpXG4jIG91dGNvbWVfdmFyaWFibGUgPC0gXCJvdXRjb21lX3NwXCJcbiMgcHJlZGljdGlvbl92YXJpYWJsZSA8LSBOVUxMXG4jIGdyb3VuZF90cnV0aF92YXJpYWJsZSA8LSBOVUxMXG4jIG5vdGlvbl9vZl9mYWlybmVzcyA8LSBcInN0YXRpc3RpY2FsIHBhcml0eVwiXG5vdXRjb21lX3ZhcmlhYmxlIDwtIE5VTExcbnByZWRpY3Rpb25fdmFyaWFibGUgPC0gXCJwcmVkaWN0aW9uXCJcbmdyb3VuZF90cnV0aF92YXJpYWJsZSA8LSBcImdyb3VuZF90cnV0aFwiXG5ub3Rpb25fb2ZfZmFpcm5lc3MgPC0gXCJlcXVhbGl6ZWQgb2Rkc1wiXG5cbnNlbnNpdGl2ZV9hdHRyaWJ1dGVzIDwtIE5VTEwgIyBcInJhY2VcIlxucmFua2luZ19tZWNoYW5pc20gPC0gXCJjb25maWRlbmNlXCJcbm5fZ3JwIDwtIDNcbm50cmVlIDwtIDI1XG5hbHBoYSA8LSAwLjFcblxuZGlyIDwtIFwiLlwiXG5kYXRhX25hbWUgPC0gXCJjb21wYXNcIlxuXG5hbGRfYXVkaXQoXG4gIGZpbGUgPSBmaWxlLFxuICBvdXRjb21lX3ZhcmlhYmxlID0gb3V0Y29tZV92YXJpYWJsZSxcbiAgcHJlZGljdGlvbl92YXJpYWJsZSA9IHByZWRpY3Rpb25fdmFyaWFibGUsXG4gIGdyb3VuZF90cnV0aF92YXJpYWJsZSA9IGdyb3VuZF90cnV0aF92YXJpYWJsZSxcbiAgc2Vuc2l0aXZlX2F0dHJpYnV0ZXMgPSBzZW5zaXRpdmVfYXR0cmlidXRlcyxcbiAgbm90aW9uX29mX2ZhaXJuZXNzID0gbm90aW9uX29mX2ZhaXJuZXNzLFxuICByYW5raW5nX21lY2hhbmlzbSA9IHJhbmtpbmdfbWVjaGFuaXNtLFxuICBkYXRhX25hbWUgPSBkYXRhX25hbWUsXG4gIGRpciA9IGRpcixcbiAgbl9ncnAgPSBuX2dycCxcbiAgbnRyZWUgPSBudHJlZSxcbiAgYWxwaGEgPSBhbHBoYSlcbmBgYCJ9 -->
+<pre class="r"><code>file &lt;- here::here(&quot;data/processed/compass_data_preproc_prediction_ground_truth.csv&quot;)
 # outcome_variable &lt;- &quot;outcome_sp&quot;
 # prediction_variable &lt;- NULL
 # ground_truth_variable &lt;- NULL
@@ -1904,17 +1776,68 @@ prediction_variable &lt;- &quot;prediction&quot;
 ground_truth_variable &lt;- &quot;ground_truth&quot;
 notion_of_fairness &lt;- &quot;equalized odds&quot;
 
-sensitive_attributes &lt;- &quot;race&quot;
+sensitive_attributes &lt;- NULL # &quot;race&quot;
 ranking_mechanism &lt;- &quot;confidence&quot;
 n_grp &lt;- 3
 ntree &lt;- 25
-alpha &lt;- 0.1</code></pre>
+alpha &lt;- 0.1
+
+dir &lt;- &quot;.&quot;
+data_name &lt;- &quot;compas&quot;
+
+ald_audit(
+  file = file,
+  outcome_variable = outcome_variable,
+  prediction_variable = prediction_variable,
+  ground_truth_variable = ground_truth_variable,
+  sensitive_attributes = sensitive_attributes,
+  notion_of_fairness = notion_of_fairness,
+  ranking_mechanism = ranking_mechanism,
+  data_name = data_name,
+  dir = dir,
+  n_grp = n_grp,
+  ntree = ntree,
+  alpha = alpha)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmlsZSA8LSBoZXJlOjpoZXJlKFwiZGF0YS9wcm9jZXNzZWQvYWR1bHRfZGF0YV9wcmVwcm9jLmNzdlwiKVxub3V0Y29tZV92YXJpYWJsZSA8LSBcIm91dGNvbWVcIlxucHJlZGljdGlvbl92YXJpYWJsZSA8LSBOVUxMXG5ncm91bmRfdHJ1dGhfdmFyaWFibGUgPC0gTlVMTFxubm90aW9uX29mX2ZhaXJuZXNzIDwtIFwic3RhdGlzdGljYWwgcGFyaXR5XCJcblxuc2Vuc2l0aXZlX2F0dHJpYnV0ZXMgPC0gTlVMTCAjIEZvciBhbGxcbnJhbmtpbmdfbWVjaGFuaXNtIDwtIFwiY29uZmlkZW5jZVwiXG5uX2dycCA8LSAzXG5udHJlZSA8LSAyNVxuYWxwaGEgPC0gMC4xXG5cbmRpciA8LSBcIi5cIlxuZGF0YV9uYW1lIDwtIFwiYWR1bHRcIlxuXG5hbGRfYXVkaXQoXG4gIGZpbGUgPSBmaWxlLFxuICBvdXRjb21lX3ZhcmlhYmxlID0gb3V0Y29tZV92YXJpYWJsZSxcbiAgcHJlZGljdGlvbl92YXJpYWJsZSA9IHByZWRpY3Rpb25fdmFyaWFibGUsXG4gIGdyb3VuZF90cnV0aF92YXJpYWJsZSA9IGdyb3VuZF90cnV0aF92YXJpYWJsZSxcbiAgc2Vuc2l0aXZlX2F0dHJpYnV0ZXMgPSBzZW5zaXRpdmVfYXR0cmlidXRlcyxcbiAgbm90aW9uX29mX2ZhaXJuZXNzID0gbm90aW9uX29mX2ZhaXJuZXNzLFxuICByYW5raW5nX21lY2hhbmlzbSA9IHJhbmtpbmdfbWVjaGFuaXNtLFxuICBkYXRhX25hbWUgPSBkYXRhX25hbWUsXG4gIGRpciA9IGRpcixcbiAgbl9ncnAgPSBuX2dycCxcbiAgbnRyZWUgPSBudHJlZSxcbiAgYWxwaGEgPSBhbHBoYSlcbmBgYCJ9 -->
+<pre class="r"><code>file &lt;- here::here(&quot;data/processed/adult_data_preproc.csv&quot;)
+outcome_variable &lt;- &quot;outcome&quot;
+prediction_variable &lt;- NULL
+ground_truth_variable &lt;- NULL
+notion_of_fairness &lt;- &quot;statistical parity&quot;
+
+sensitive_attributes &lt;- NULL # For all
+ranking_mechanism &lt;- &quot;confidence&quot;
+n_grp &lt;- 3
+ntree &lt;- 25
+alpha &lt;- 0.1
+
+dir &lt;- &quot;.&quot;
+data_name &lt;- &quot;adult&quot;
+
+ald_audit(
+  file = file,
+  outcome_variable = outcome_variable,
+  prediction_variable = prediction_variable,
+  ground_truth_variable = ground_truth_variable,
+  sensitive_attributes = sensitive_attributes,
+  notion_of_fairness = notion_of_fairness,
+  ranking_mechanism = ranking_mechanism,
+  data_name = data_name,
+  dir = dir,
+  n_grp = n_grp,
+  ntree = ntree,
+  alpha = alpha)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlZpZ25ldHRlIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KDQoNCmBgYHtyfQ0KZmlsZSA8LSBoZXJlOjpoZXJlKCJkYXRhL3Byb2Nlc3NlZC9jb21wYXNzX2RhdGFfcHJlcHJvY19lb19zcC5jc3YiKQ0KIyBvdXRjb21lX3ZhcmlhYmxlIDwtICJvdXRjb21lX3NwIg0KIyBwcmVkaWN0aW9uX3ZhcmlhYmxlIDwtIE5VTEwNCiMgZ3JvdW5kX3RydXRoX3ZhcmlhYmxlIDwtIE5VTEwNCiMgbm90aW9uX29mX2ZhaXJuZXNzIDwtICJzdGF0aXN0aWNhbCBwYXJpdHkiDQpvdXRjb21lX3ZhcmlhYmxlIDwtIE5VTEwNCnByZWRpY3Rpb25fdmFyaWFibGUgPC0gInByZWRpY3Rpb24iDQpncm91bmRfdHJ1dGhfdmFyaWFibGUgPC0gImdyb3VuZF90cnV0aCINCm5vdGlvbl9vZl9mYWlybmVzcyA8LSAiZXF1YWxpemVkIG9kZHMiDQoNCnNlbnNpdGl2ZV9hdHRyaWJ1dGVzIDwtICJyYWNlIg0KcmFua2luZ19tZWNoYW5pc20gPC0gImNvbmZpZGVuY2UiDQpuX2dycCA8LSAzDQpudHJlZSA8LSAyNQ0KYWxwaGEgPC0gMC4xDQpgYGANCg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlZpZ25ldHRlIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KDQoNCmBgYHtyfQ0Kc291cmNlKGhlcmU6OmhlcmUoIlIvYWxkX2F1ZGl0LlIiKSkNCnNvdXJjZShoZXJlOjpoZXJlKCJSL2FuYWx5c2VfdW5pcXVlX2xlYXZlcy5SIikpDQpzb3VyY2UoaGVyZTo6aGVyZSgiUi9hdWRpdF9yZXBvcnQuUiIpKQ0Kc291cmNlKGhlcmU6OmhlcmUoIlIvbG9hZF9kYXRhLlIiKSkNCnNvdXJjZShoZXJlOjpoZXJlKCJSL3Bvc3Rwcm9jZXNzLlIiKSkNCmBgYA0KDQoNCmBgYHtyfQ0KZmlsZSA8LSBoZXJlOjpoZXJlKCJkYXRhL3Byb2Nlc3NlZC9jb21wYXNzX2RhdGFfcHJlcHJvY19wcmVkaWN0aW9uX2dyb3VuZF90cnV0aC5jc3YiKQ0KIyBvdXRjb21lX3ZhcmlhYmxlIDwtICJvdXRjb21lX3NwIg0KIyBwcmVkaWN0aW9uX3ZhcmlhYmxlIDwtIE5VTEwNCiMgZ3JvdW5kX3RydXRoX3ZhcmlhYmxlIDwtIE5VTEwNCiMgbm90aW9uX29mX2ZhaXJuZXNzIDwtICJzdGF0aXN0aWNhbCBwYXJpdHkiDQpvdXRjb21lX3ZhcmlhYmxlIDwtIE5VTEwNCnByZWRpY3Rpb25fdmFyaWFibGUgPC0gInByZWRpY3Rpb24iDQpncm91bmRfdHJ1dGhfdmFyaWFibGUgPC0gImdyb3VuZF90cnV0aCINCm5vdGlvbl9vZl9mYWlybmVzcyA8LSAiZXF1YWxpemVkIG9kZHMiDQoNCnNlbnNpdGl2ZV9hdHRyaWJ1dGVzIDwtIE5VTEwgIyAicmFjZSINCnJhbmtpbmdfbWVjaGFuaXNtIDwtICJjb25maWRlbmNlIg0Kbl9ncnAgPC0gMw0KbnRyZWUgPC0gMjUNCmFscGhhIDwtIDAuMQ0KDQpkaXIgPC0gIi4iDQpkYXRhX25hbWUgPC0gImNvbXBhcyINCg0KYWxkX2F1ZGl0KA0KICBmaWxlID0gZmlsZSwNCiAgb3V0Y29tZV92YXJpYWJsZSA9IG91dGNvbWVfdmFyaWFibGUsDQogIHByZWRpY3Rpb25fdmFyaWFibGUgPSBwcmVkaWN0aW9uX3ZhcmlhYmxlLA0KICBncm91bmRfdHJ1dGhfdmFyaWFibGUgPSBncm91bmRfdHJ1dGhfdmFyaWFibGUsDQogIHNlbnNpdGl2ZV9hdHRyaWJ1dGVzID0gc2Vuc2l0aXZlX2F0dHJpYnV0ZXMsDQogIG5vdGlvbl9vZl9mYWlybmVzcyA9IG5vdGlvbl9vZl9mYWlybmVzcywNCiAgcmFua2luZ19tZWNoYW5pc20gPSByYW5raW5nX21lY2hhbmlzbSwNCiAgZGF0YV9uYW1lID0gZGF0YV9uYW1lLA0KICBkaXIgPSBkaXIsDQogIG5fZ3JwID0gbl9ncnAsDQogIG50cmVlID0gbnRyZWUsDQogIGFscGhhID0gYWxwaGEpDQpgYGANCg0KYGBge3J9DQpmaWxlIDwtIGhlcmU6OmhlcmUoImRhdGEvcHJvY2Vzc2VkL2FkdWx0X2RhdGFfcHJlcHJvYy5jc3YiKQ0Kb3V0Y29tZV92YXJpYWJsZSA8LSAib3V0Y29tZSINCnByZWRpY3Rpb25fdmFyaWFibGUgPC0gTlVMTA0KZ3JvdW5kX3RydXRoX3ZhcmlhYmxlIDwtIE5VTEwNCm5vdGlvbl9vZl9mYWlybmVzcyA8LSAic3RhdGlzdGljYWwgcGFyaXR5Ig0KDQpzZW5zaXRpdmVfYXR0cmlidXRlcyA8LSBOVUxMICMgRm9yIGFsbA0KcmFua2luZ19tZWNoYW5pc20gPC0gImNvbmZpZGVuY2UiDQpuX2dycCA8LSAzDQpudHJlZSA8LSAyNQ0KYWxwaGEgPC0gMC4xDQoNCmRpciA8LSAiLiINCmRhdGFfbmFtZSA8LSAiYWR1bHQiDQoNCmFsZF9hdWRpdCgNCiAgZmlsZSA9IGZpbGUsDQogIG91dGNvbWVfdmFyaWFibGUgPSBvdXRjb21lX3ZhcmlhYmxlLA0KICBwcmVkaWN0aW9uX3ZhcmlhYmxlID0gcHJlZGljdGlvbl92YXJpYWJsZSwNCiAgZ3JvdW5kX3RydXRoX3ZhcmlhYmxlID0gZ3JvdW5kX3RydXRoX3ZhcmlhYmxlLA0KICBzZW5zaXRpdmVfYXR0cmlidXRlcyA9IHNlbnNpdGl2ZV9hdHRyaWJ1dGVzLA0KICBub3Rpb25fb2ZfZmFpcm5lc3MgPSBub3Rpb25fb2ZfZmFpcm5lc3MsDQogIHJhbmtpbmdfbWVjaGFuaXNtID0gcmFua2luZ19tZWNoYW5pc20sDQogIGRhdGFfbmFtZSA9IGRhdGFfbmFtZSwNCiAgZGlyID0gZGlyLA0KICBuX2dycCA9IG5fZ3JwLA0KICBudHJlZSA9IG50cmVlLA0KICBhbHBoYSA9IGFscGhhKQ0KYGBgDQoNCg==</div>
 
 
 

@@ -6,7 +6,16 @@ output: html_notebook
 
 
 ```{r}
-file <- here::here("data/processed/compass_data_preproc_eo_sp.csv")
+source(here::here("R/ald_audit.R"))
+source(here::here("R/analyse_unique_leaves.R"))
+source(here::here("R/audit_report.R"))
+source(here::here("R/load_data.R"))
+source(here::here("R/postprocess.R"))
+```
+
+
+```{r}
+file <- here::here("data/processed/compass_data_preproc_prediction_ground_truth.csv")
 # outcome_variable <- "outcome_sp"
 # prediction_variable <- NULL
 # ground_truth_variable <- NULL
@@ -16,10 +25,58 @@ prediction_variable <- "prediction"
 ground_truth_variable <- "ground_truth"
 notion_of_fairness <- "equalized odds"
 
-sensitive_attributes <- "race"
+sensitive_attributes <- NULL # "race"
 ranking_mechanism <- "confidence"
 n_grp <- 3
 ntree <- 25
 alpha <- 0.1
+
+dir <- "."
+data_name <- "compas"
+
+ald_audit(
+  file = file,
+  outcome_variable = outcome_variable,
+  prediction_variable = prediction_variable,
+  ground_truth_variable = ground_truth_variable,
+  sensitive_attributes = sensitive_attributes,
+  notion_of_fairness = notion_of_fairness,
+  ranking_mechanism = ranking_mechanism,
+  data_name = data_name,
+  dir = dir,
+  n_grp = n_grp,
+  ntree = ntree,
+  alpha = alpha)
+```
+
+```{r}
+file <- here::here("data/processed/adult_data_preproc.csv")
+outcome_variable <- "outcome"
+prediction_variable <- NULL
+ground_truth_variable <- NULL
+notion_of_fairness <- "statistical parity"
+
+sensitive_attributes <- NULL # For all
+ranking_mechanism <- "confidence"
+n_grp <- 3
+ntree <- 25
+alpha <- 0.1
+
+dir <- "."
+data_name <- "adult"
+
+ald_audit(
+  file = file,
+  outcome_variable = outcome_variable,
+  prediction_variable = prediction_variable,
+  ground_truth_variable = ground_truth_variable,
+  sensitive_attributes = sensitive_attributes,
+  notion_of_fairness = notion_of_fairness,
+  ranking_mechanism = ranking_mechanism,
+  data_name = data_name,
+  dir = dir,
+  n_grp = n_grp,
+  ntree = ntree,
+  alpha = alpha)
 ```
 
