@@ -1,0 +1,30 @@
+---
+output: html_document
+params:
+  title: NA
+  description: NA
+  table: NA
+  trees_plots: NA
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+# `r params$title`
+
+`r params$description`
+
+\vspace{30pt}
+
+```{r}
+params$table
+```
+
+
+```{r, fig.height=6}
+for (i in seq_len(length(trees$plots))) {
+  params$trees_plots[[i]]
+}
+```

@@ -32,7 +32,11 @@ export_audit_report <- function(results_df,
   
   temp_dir   <- tempdir()
   tempReport <- file.path(temp_dir, "report.Rmd")
-  file.copy("input/report_pdf.Rmd",
+  
+  assertthat::assert_that(file.exists("inst/report_pdf.Rmd"),
+                          "Report template can't be found: inst/report_pdf.Rmd")
+  
+  file.copy("inst/report_pdf.Rmd",
             tempReport, 
             overwrite = TRUE)
   

@@ -1,0 +1,53 @@
+---
+output: pdf_document
+geometry: "left=3cm,right=3cm,top=2cm,bottom=2cm"
+documentclass: article
+classoption: landscape, a4paper
+params:
+  title: NA
+  description: NA
+  table: NA
+  trees_plots: NA
+---
+
+\pagestyle{empty}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.width = 12)
+```
+
+# `r params$title`
+
+`r params$description`
+
+\vspace{30pt}
+
+```{r, ft.arraystretch = 2}
+# Some Rmarkdown PDF specific arguments like ft.arraystretch are documented here:
+# https://search.r-project.org/CRAN/refmans/flextable/html/knit_print.flextable.html
+
+params$table
+```
+
+
+```{r, fig.height=6, results='asis'}
+# Results 'asis' to cat a newpage, this requires a print of the plot
+for (i in seq_len(length(trees$plots))) {
+  cat("\n\n\\newpage\n")
+  print(params$trees_plots[[i]])
+}
+```
+
+
+```{r, echo = FALSE, out.width=c("100%")}
+# Example of adding an image 
+# knitr::include_graphics(c("header-lvl1.png"))
+```
+
+```{r, echo = FALSE, out.width=c("65%", "35%")}
+# Example of adding 2 images next to each other
+# knitr::include_graphics(c("viz_gi_.png",
+#                           "viz_ggmap_.png"))
+```
+
+
