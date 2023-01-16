@@ -2,9 +2,14 @@
 #' Load data
 #' 
 #' - Read csv file 
-#' - Assertions:
-#'  + outcome
-#'  + sen_attr
+#' - In case of statistical parity 
+#'  + check and set the outcome variable
+#' - In case of equalized odds
+#'  + check the prediction and ground_truth
+#'  + set the error_type and outcome variables
+#' - check and set the sensitive attribute variables
+#' - select the outcome and sensitive attributes as columns, plus the error_type in case of equalized odds
+#' - set character variables to factors
 #'
 #' @param file character(1)
 #' @param outcome character(1)
@@ -29,7 +34,6 @@ load_data <- function(file, outcome, prediction, ground_truth, sen_attr, psi_met
   col_names <- names(dataset)
   
   
-  ### Data assertions: outcome
   if (psi_metric == "statistical parity") {
     assertthat::assert_that(
       outcome %in% col_names,
@@ -65,18 +69,21 @@ load_data <- function(file, outcome, prediction, ground_truth, sen_attr, psi_met
     dataset <- dplyr::mutate(dataset, outcome = dplyr::if_else(ground_truth == 1, 0, 1))
   }
   
-  ### Data assertions: sen_attr
+  
   if (!is.null(sen_attr)) {
     cols_sa <- sen_attr %in% col_names
     assertthat::assert_that(
       all(cols_sa),
       msg = paste0("Some sensitive_attributes are not columns in the dataset: ", 
                    paste(sen_attr[!cols_sa], collapse = ", ")))
-    
-    # Keep all columns
-    # dataset <- dataset[c(outcome, sen_attr)]
   } else {
-    sen_attr <- col_names[col_names != outcome]
+    
+    not_sensitive_attributes <- c(outcome, "outcome", 
+                                  prediction, "prediction", 
+                                  ground_truth, "ground_truth",
+                                  "error_type")
+    
+    sen_attr <- col_names[!col_names %in% not_sensitive_attributes]
     
     assertthat::assert_that(any(!sen_attr %in% reserved_colnames),
                             msg = paste("sensitive_attributes can't be any of reserved names:", 
@@ -86,14 +93,20 @@ load_data <- function(file, outcome, prediction, ground_truth, sen_attr, psi_met
   cols_chr <- purrr::map_lgl(dataset, is.character)
   cols_chr <- names(cols_chr[cols_chr])
   
+  
+  if (psi_metric == "statistical parity") {
+    dataset <- dataset[c("outcome", sen_attr)]
+  } else if (psi_metric == "equalized odds") {
+    dataset <- dataset[c("outcome", sen_attr, "error_type")]
+  }
+  
+  
   # partykit::cforest doesn't allow characters, they have to be factors
   dataset <- dplyr::mutate(dataset, dplyr::across(tidyselect::all_of(cols_chr), ~ as.factor(.)))
   warning("TO DO: restrictions on sensitive attributes?")
   
   
-  ### Data assertions: 
-  warning("TO DO: restrictions on other variables?")
-  
-  dataset
+  list(dataset  = dataset,
+       sen_attr = sen_attr)
 }
 

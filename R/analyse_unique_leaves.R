@@ -1,19 +1,15 @@
 
-
-
-#' Title
+#' Analyse unique leaves
 #'
-#' @param partitioning 
-#' @param dataset 
-#' @param ntree 
+#' @param partitioning result from partykit::cforest()
+#' @param dataset data frame that the cforest was trained on
+#' @param ntree numeric(1) number of trees
 #'
 #' @return
 #' @export
 #'
 #' @examples
-analyse_unique_leaves <- function(partitioning, dataset, 
-                                  # outcome, prediction, ground_truth, 
-                                  psi_metric, ntree) {
+analyse_unique_leaves <- function(partitioning, dataset, psi_metric, ntree) {
   
   # prepare vectors for subgroup/leaf results
   n_leaves_total       <- get_total_n_leaves(partitioning, ntree)
@@ -31,8 +27,7 @@ analyse_unique_leaves <- function(partitioning, dataset,
     focal_tree    <- partykit::gettree(partitioning, tree = t)
     
     dataset_tree <- dplyr::mutate(dataset, leaves_ = unname(stats::predict(focal_tree, dataset, type = "node")))
-    # leaves        <- unname(stats::predict(focal_tree, dataset, type = "node"))
-    
+
     unique_leaves <- unique(dataset_tree$leaves_)
     
     conditions <- partykit:::.list.rules.party(focal_tree, unique_leaves)
@@ -45,15 +40,8 @@ analyse_unique_leaves <- function(partitioning, dataset,
       dataset_leave <- dplyr::mutate(dataset_tree, leaf_indicator_ = leaves_ == leaf)
       # leaf_indicator <- leaves == leaf
       
-      warning("TO DO: decide how to deal with equalized odds")
-      
       # compute magnitude and (uncorrected) confidence of disparity
-      disparity_val <- compute_magnit_and_confid(# leaf_indicator = leaf_indicator, 
-                                                 mydata         = dataset_leave, 
-                                                 # outcome        = outcome,
-                                                 # prediction     = prediction, 
-                                                 # ground_truth   = ground_truth, 
-                                                 psi_metric     = psi_metric)
+      disparity_val <- compute_magnit_and_confid(dataset_leave, psi_metric = psi_metric)
       
       # record values
       group_size[i] <- sum(dataset_leave$leaf_indicator_)
@@ -97,22 +85,20 @@ get_total_n_leaves <- function(partitioning, ntree) {
 
 
 
-# compute magnitude and (uncorrected) confidence for given leaf (subgroup)
-compute_magnit_and_confid <- function(mydata, 
-                                      psi_metric){
+#' compute magnitude and (uncorrected) confidence for given leaf (subgroup)
+#'
+#' @param .data data frame with a leaf_indicator_ column and outcome (for statistical parity) or error_type (for equalized odds)
+#' @param psi_metric character(1)
+#'
+#' @return
+#' @export
+#'
+#' @examples
+compute_magnit_and_confid <- function(.data, psi_metric){
   
-  if (psi_metric == "equalized odds"){
+  if (psi_metric == "equalized odds") {
     
-    # stats <- mydata %>% 
-    #   dplyr::count(leaf_indicator_, error_type)
-    # 
-    # le <- stats %>% 
-    #   dplyr::filter(leaf_indicator_) %>% 
-    #   dplyr::select(error_type, n) %>% 
-    #   tibble::deframe() %>% 
-    #   as.list()
-    
-    le_data <- dplyr::filter(mydata, leaf_indicator_)
+    le_data <- dplyr::filter(.data, leaf_indicator_)
     le <- list()
     
     le$tp <- sum(le_data$error_type == "tp")
@@ -123,13 +109,7 @@ compute_magnit_and_confid <- function(mydata,
     le$tpr <- le$tp / (le$tp + le$fn)
     le$fpr <- le$fp / (le$fp + le$tn)
     
-    # oe <- stats %>% 
-    #   dplyr::filter(!leaf_indicator_) %>% 
-    #   dplyr::select(error_type, n) %>% 
-    #   tibble::deframe() %>% 
-    #   as.list()
-    
-    oe_data <- dplyr::filter(mydata, !leaf_indicator_)
+    oe_data <- dplyr::filter(.data, !leaf_indicator_)
     oe <- list()
     
     oe$tp <- sum(oe_data$error_type == "tp")
@@ -140,8 +120,8 @@ compute_magnit_and_confid <- function(mydata,
     oe$tpr <- oe$tp / (oe$tp + oe$fn)
     oe$fpr <- oe$fp / (oe$fp + oe$tn)
     
-    leaf_errors    <- le # get_errors(leaf_indicator, mydata$error_type)
-    outside_errors <- oe # get_errors(outside_indicator, mydata$error_type)
+    leaf_errors    <- le 
+    outside_errors <- oe 
     
     # calculate magnitude of disparity (absolute odds difference)
     disp_metric <- 0.5*(abs(leaf_errors$fpr - outside_errors$fpr) + 
@@ -159,8 +139,8 @@ compute_magnit_and_confid <- function(mydata,
                                      nrow = 2, ncol = 2), correct=FALSE)
     uncor_p_val <- pchisq(-2*(log(fp_test$p.value) + log(fn_test$p.value)), 
                           df=4, lower.tail=FALSE)  # fisher's method
-  }
-  else if(psi_metric == "statistical parity"){
+    
+  } else if (psi_metric == "statistical parity") {
     
     stats <- mydata %>%
       dplyr::group_by(leaf_indicator_) %>%
@@ -182,9 +162,6 @@ compute_magnit_and_confid <- function(mydata,
       tibble::deframe() %>% 
       as.list()
     
-    # leaf_val    <- get_outcome_share(leaf_indicator, mydata$outcome, x=1)
-    # outside_val <- get_outcome_share(outside_indicator, mydata$outcome, x=1)
-    
     # calculate magnitude of disparity (statistical parity difference)
     disp_metric <- leaf_val$share_x - outside_val$share_x
     
@@ -193,12 +170,11 @@ compute_magnit_and_confid <- function(mydata,
       c(leaf_val$x, leaf_val$n - leaf_val$x, 
         outside_val$x, outside_val$n - outside_val$x),
       nrow = 2, ncol = 2), correct=FALSE)$p.value
-  }
-  else{
+  } else {
     stop(paste(psi_metric,"is not implemented; try 'statistical parity' or 'equalized odds'."))
   }
-  ret_list <- list("disp_metric" = disp_metric, 
-                   "uncor_p_val" = uncor_p_val)
-  return(ret_list)
+  
+  list("disp_metric" = disp_metric, 
+       "uncor_p_val" = uncor_p_val)
 }
 
