@@ -52,17 +52,17 @@ pdf report
 }
 \description{
 The ALD audit:
+\itemize{
+  \item is performed on a dataset of your choice, the dataset must be provided as a .csv file
+  \item requires notion of fairness to be set to 'statistical parity' or 'equalized odds'
+  \item in case of 'statistical parity' you must set the outcome_variable argument to the name of the outcome variable in your dataset
+  \item for 'equalized odds' you must set the prediction_variable and ground_truth_variable arguments to the names of the prediction and ground truth variables in your dataset
+  \item by default all other variables (not outcome, prediction, ground truth) in you dataset will be used as sensitive attributes in the audit. You can use the sensitive_attributes argument to specifically set the sensitive attributes to a subset of your dataset varaiables
+  \item requires a ranking mechanism which must be 'confidence' or 'magnitude'
+  \item requires a maximum number of groups in the report (n_grp)
+  \item requires a number of trees to model in partykit::cforest (ntree)
+  \item requires a alpha argument passed to partykit::cforest (alpha)
+  \item optionally takes a random seed number that can be used for reproducibility of results
+  \item writes a report to the directory that you set with the dir argument, with data_name argument used in the name
 }
-\details{
-- is performed on a dataset of your choice, the dataset must be provided as a .csv file
-- requires notion of fairness to be set to 'statistical parity' or 'equalized odds'
- + in case of 'statistical parity' you must set the outcome_variable argument to the name of the outcome variable in your dataset
- + for 'equalized odds' you must set the prediction_variable and ground_truth_variable arguments to the names of the prediction and ground truth variables in your dataset
-- by default all other variables (not outcome, prediction, ground truth) in you dataset will be used as sensitive attributes in the audit. You can use the sensitive_attributes argument to specifically set the sensitive attributes to a subset of your dataset varaiables
-- requires a ranking mechanism which must be 'confidence' or 'magnitude'
-- requires a maximum number of groups in the report (n_grp)
-- requires a number of trees to model in partykit::cforest (ntree)
-- requires a alpha argument passed to partykit::cforest (alpha)
-- optionally takes a random seed number that can be used for reproducibility of results
-- writes a report to the directory that you set with the dir argument, with data_name argument used in the name
 }
