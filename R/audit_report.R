@@ -17,9 +17,6 @@
 #' @param dir character(1) name of directory to write to
 #'
 #' @return
-#' @export
-#'
-#' @examples
 export_audit_report <- function(results_df, 
                                 n_grp, 
                                 psi_metric, 
@@ -33,11 +30,19 @@ export_audit_report <- function(results_df,
   temp_dir   <- tempdir()
   tempReport <- file.path(temp_dir, "report.Rmd")
   
-  assertthat::assert_that(file.exists("inst/report_pdf.Rmd"),
-                          "Report template can't be found: inst/report_pdf.Rmd")
+  # system.file will use the report that is installed with the package
+  template_file <- system.file("report_pdf.Rmd", package = "ald")
   
-  file.copy("inst/report_pdf.Rmd",
-            tempReport, 
+  # In case the package isn't installed. For development mode mostly
+  if (template_file == "") {
+    template_file <- here::here("inst/report_pdf.Rmd")
+  }
+  
+  assertthat::assert_that(file.exists(template_file),
+                          msg = "Report template can't be found: report_pdf.Rmd")
+  
+  file.copy(template_file,
+            tempReport,
             overwrite = TRUE)
   
   title <- "Audit report"
@@ -71,7 +76,8 @@ export_audit_report <- function(results_df,
   # child of the global environment (this isolates the code in the document
   # from the code in this app).
   rmarkdown::render(tempReport, 
-                    output_file = file.path(dir, paste0("audit_report_", data_name, ".pdf")),
+                    output_file = paste0("audit_report_", data_name, ".pdf"),
+                    output_dir  = dir,
                     params      = params,
                     envir       = new.env(parent = globalenv()))
   
@@ -91,7 +97,6 @@ export_audit_report <- function(results_df,
 #' @param sen_attr character()
 #'
 #' @return
-#' @export
 #'
 #' @examples
 audit_report_trees <- function(results_df, partitioning, dataset, psi_metric, sen_attr) {
@@ -132,7 +137,6 @@ audit_report_trees <- function(results_df, partitioning, dataset, psi_metric, se
 #' @param dataset data frame that the cforest was trained on
 #'
 #' @return
-#' @export
 #'
 #' @examples
 audit_report_table <- function(results_df, n_grp, dataset) {
@@ -168,9 +172,6 @@ audit_report_table <- function(results_df, n_grp, dataset) {
 #' @param tree result from partykit::gettree()
 #'
 #' @return
-#' @export
-#'
-#' @examples
 get_node_depths <- function(tree) {
   outTree <- utils::capture.output(tree)
   idCount <- 1
@@ -197,9 +198,6 @@ get_node_depths <- function(tree) {
 #' @param psi_metric character(1)
 #'
 #' @return
-#' @export
-#'
-#' @examples
 visualize_tree <- function(results_df, t, ct, dataset, psi_metric){
   
   # round results
@@ -208,8 +206,11 @@ visualize_tree <- function(results_df, t, ct, dataset, psi_metric){
   
   # compute metrics
   cnode   <- partykit::node_party(ct)
-  metrics <- list()
-  metrics <- rec_nodes(cnode, dataset, dataset, psi_metric = psi_metric, first=TRUE)
+  metrics <- rec_nodes(cnode      = cnode, 
+                       data       = dataset, 
+                       subset     = dataset, 
+                       psi_metric = psi_metric, 
+                       first      = TRUE)
   
   # plot tree
   tree_plot <- ggparty::ggparty(ct) +
@@ -297,9 +298,6 @@ visualize_tree <- function(results_df, t, ct, dataset, psi_metric){
 #' @param disparity 
 #'
 #' @return
-#' @export
-#'
-#' @examples
 get_disp_color <- function(disparity) {
   disparity_abs = abs(disparity)
   return_colors = list()
@@ -331,41 +329,33 @@ get_disp_color <- function(disparity) {
 #' @param first logical(1) Initial computation of recursive flow  
 #'
 #' @return
-#' @export
-#'
-#' @examples
+#'  metrics <- rec_nodes(cnode, dataset, dataset, psi_metric = psi_metric, first = TRUE)
 rec_nodes <- function(cnode, data, subset, psi_metric, first = FALSE) {
   if (first) {
-    metrics = data.frame(cnode$id, 0.0, nrow(subset), nrow(subset)/nrow(data))
-    names(metrics) = c("node_id", "disparity", "n", "n_rel")
+    metrics <- data.frame(cnode$id, 0.0, nrow(subset), nrow(subset)/nrow(data))
+    names(metrics) <- c("node_id", "disparity", "n", "n_rel")
   } else {
     rest_ids <- setdiff(rownames(data), rownames(subset))
     rest <- data[rest_ids,]
-    if(psi_metric=="statistical parity"){
+    if (psi_metric == "statistical parity") {
       psi_computed = compute_stat_par(rest$outcome, subset$outcome)
-    }
-    else if(psi_metric=="equalized odds"){
-      # browser()
+    } else if (psi_metric == "equalized odds") {
       psi_computed = compute_abs_odds(rest$error_type, subset$error_type)
-    }
-    else{
+    } else{
       stop("The fairness metric provided is not implemented.")
     }
-    metric_new = data.frame(cnode$id,
-                            psi_computed,
-                            nrow(subset),
-                            nrow(subset)/nrow(data))
-    names(metric_new) = c("node_id", "disparity", "n", "n_rel")
-    metrics = rbind(metrics, metric_new)
+    metric_new <- data.frame(cnode$id, psi_computed, nrow(subset), nrow(subset)/nrow(data))
+    names(metric_new) <- c("node_id", "disparity", "n", "n_rel")
+    metrics <- metric_new
+    # metrics <- rbind(metrics, metric_new)
   }
-  if(!(partykit::is.terminal(cnode))){
-    subset1 = apply_split(cnode, subset, side = 1)
-    subset2 = apply_split(cnode, subset, side = 2)
-    metrics = rbind(metrics, rec_nodes(cnode[1], data, subset1, psi_metric))
-    metrics = rbind(metrics, rec_nodes(cnode[2], data, subset2, psi_metric))
+  if (!(partykit::is.terminal(cnode))) {
+    subset1 <- apply_split(cnode, subset, side = 1)
+    subset2 <- apply_split(cnode, subset, side = 2)
+    metrics <- rbind(metrics, rec_nodes(cnode = cnode[1], data = data, subset = subset1, psi_metric = psi_metric))
+    metrics <- rbind(metrics, rec_nodes(cnode = cnode[2], data = data, subset = subset2, psi_metric = psi_metric))
     return(metrics)
-  }
-  else{
+  } else {
     return(metrics)
   }
 }
@@ -377,9 +367,6 @@ rec_nodes <- function(cnode, data, subset, psi_metric, first = FALSE) {
 #' @param side numeric(1) side 1 or 2
 #'
 #' @return
-#' @export
-#'
-#' @examples
 apply_split = function(cnode, data, side){
   data$split = partykit::kidids_split(partykit::split_node(cnode), data)
   subset = data[data$split == side, ]
@@ -394,9 +381,6 @@ apply_split = function(cnode, data, side){
 #' @param x 
 #'
 #' @return
-#' @export
-#'
-#' @examples
 compute_stat_par = function(rest_outcome, subset_outcome, x=1){
   sub_psi = sum(subset_outcome == x)/length(subset_outcome)
   rest_psi = sum(rest_outcome == x)/length(rest_outcome)
@@ -411,9 +395,6 @@ compute_stat_par = function(rest_outcome, subset_outcome, x=1){
 #' @param subset_error_type 
 #'
 #' @return
-#' @export
-#'
-#' @examples
 compute_abs_odds = function(rest_error_type, subset_error_type){
   
   # compute false positive/negative rates for subgroup and rest

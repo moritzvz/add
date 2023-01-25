@@ -20,9 +20,6 @@
 #' @param reserved_colnames character() 
 #'
 #' @return
-#' @export
-#'
-#' @examples
 load_data <- function(file, outcome, prediction, ground_truth, sen_attr, psi_metric, reserved_colnames) {
   
   ### Read .csv

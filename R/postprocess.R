@@ -11,9 +11,6 @@
 #' @param ranking character(1)
 #'
 #' @return
-#' @export
-#'
-#' @examples
 postprocess_results <- function(results_df, ranking) {
   
   results_df <- dplyr::mutate(results_df, group_condition = purrr::map_chr(group_condition, clean_condition_str))
@@ -34,9 +31,6 @@ postprocess_results <- function(results_df, ranking) {
 #' @param raw_str character(1)
 #'
 #' @return
-#' @export
-#'
-#' @examples
 clean_condition_str <- function(raw_str) {
   str_splits        <- stringr::str_split(raw_str, pattern = " & ", simplify = TRUE)
   cleaned_condition <- ""
@@ -77,9 +71,6 @@ clean_condition_str <- function(raw_str) {
 #' @param ranking character(1) 'confidence' or 'magnitude'
 #'
 #' @return
-#' @export
-#'
-#' @examples
 rank_results <- function(results_df, ranking){
   if (ranking == "confidence"){
     results_df <- results_df[order(results_df$disparity_confidence),]

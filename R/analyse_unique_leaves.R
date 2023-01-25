@@ -6,9 +6,6 @@
 #' @param ntree numeric(1) number of trees
 #'
 #' @return
-#' @export
-#'
-#' @examples
 analyse_unique_leaves <- function(partitioning, dataset, psi_metric, ntree) {
   
   # prepare vectors for subgroup/leaf results
@@ -23,7 +20,7 @@ analyse_unique_leaves <- function(partitioning, dataset, psi_metric, ntree) {
   # ...and determine the leaf (index) for each sample in data set
   i <- 1
   
-  for(t in 1:ntree) {
+  for (t in 1:ntree) {
     focal_tree    <- partykit::gettree(partitioning, tree = t)
     
     dataset_tree <- dplyr::mutate(dataset, leaves_ = unname(stats::predict(focal_tree, dataset, type = "node")))
@@ -32,19 +29,19 @@ analyse_unique_leaves <- function(partitioning, dataset, psi_metric, ntree) {
     
     conditions <- partykit:::.list.rules.party(focal_tree, unique_leaves)
     
-    for(leaf in unique_leaves){
+    for (leaf in unique_leaves) {
       # get condition of leaf (subgroup description)
       condition <- conditions[as.character(leaf)]
       
       # get individuals in leaf (subgroup)
-      dataset_leave <- dplyr::mutate(dataset_tree, leaf_indicator_ = leaves_ == leaf)
+      dataset_leaf <- dplyr::mutate(dataset_tree, leaf_indicator_ = leaves_ == leaf)
       # leaf_indicator <- leaves == leaf
       
       # compute magnitude and (uncorrected) confidence of disparity
-      disparity_val <- compute_magnit_and_confid(dataset_leave, psi_metric = psi_metric)
+      disparity_val <- compute_magnit_and_confid(dataset_leaf, psi_metric = psi_metric)
       
       # record values
-      group_size[i] <- sum(dataset_leave$leaf_indicator_)
+      group_size[i] <- sum(dataset_leaf$leaf_indicator_)
       group_condition[i] <- condition
       disparity_magnitude[i] <- disparity_val$disp_metric
       disparity_confidence[i] <- disparity_val$uncor_p_val
@@ -70,9 +67,6 @@ analyse_unique_leaves <- function(partitioning, dataset, psi_metric, ntree) {
 #' @param ntree numeric(1) number of trees
 #'
 #' @return
-#' @export
-#'
-#' @examples
 get_total_n_leaves <- function(partitioning, ntree) {
   n_leaves_per_t <- numeric(ntree)
   
@@ -91,9 +85,6 @@ get_total_n_leaves <- function(partitioning, ntree) {
 #' @param psi_metric character(1)
 #'
 #' @return
-#' @export
-#'
-#' @examples
 compute_magnit_and_confid <- function(.data, psi_metric){
   
   if (psi_metric == "equalized odds") {
@@ -142,7 +133,7 @@ compute_magnit_and_confid <- function(.data, psi_metric){
     
   } else if (psi_metric == "statistical parity") {
     
-    stats <- mydata %>%
+    stats <- .data %>%
       dplyr::group_by(leaf_indicator_) %>%
       dplyr::summarise(n = dplyr::n(), x = sum(outcome)) %>%
       dplyr::ungroup() %>%

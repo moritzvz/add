@@ -32,7 +32,7 @@ params$table
 
 ```{r, fig.height=6, results='asis'}
 # Results 'asis' to cat a newpage, this requires a print of the plot
-for (i in seq_len(length(trees$plots))) {
+for (i in seq_len(length(params$trees_plots))) {
   cat("\n\n\\newpage\n")
   print(params$trees_plots[[i]])
 }

@@ -1,18 +1,36 @@
 
 #' ALD Audit
+#' 
+#' The ALD audit:
+#' 
+#' - is performed on a dataset of your choice, the dataset must be provided as a .csv file
+#' - requires notion of fairness to be set to 'statistical parity' or 'equalized odds'
+#'  + in case of 'statistical parity' you must set the outcome_variable argument to the name of the outcome variable in your dataset
+#'  + for 'equalized odds' you must set the prediction_variable and ground_truth_variable arguments to the names of the prediction and ground truth variables in your dataset
+#' - by default all other variables (not outcome, prediction, ground truth) in you dataset will be used as sensitive attributes in the audit. You can use the sensitive_attributes argument to specifically set the sensitive attributes to a subset of your dataset varaiables
+#' - requires a ranking mechanism which must be 'confidence' or 'magnitude'
+#' - requires a maximum number of groups in the report (n_grp)
+#' - requires a number of trees to model in partykit::cforest (ntree)
+#' - requires a alpha argument passed to partykit::cforest (alpha)
+#' - optionally takes a random seed number that can be used for reproducibility of results
+#' - writes a report to the directory that you set with the dir argument, with data_name argument used in the name
+#' 
+#' 
+#' @param file .csv file that holds the data to conduct the audit on, character(1) 
+#' @param outcome_variable name of the outcome variable in your data file as character(1) or NULL (by default). Only in case notion_of_fairness is 'statistical parity' do you require to give an outcome variable 
+#' @param prediction_variable name of the prediction variable in your data file as character(1) or NULL (by default). Only in case notion_of_fairness is 'equalised odds' do you require to give an prediction variable 
+#' @param ground_truth_variable name of the ground truth variable in your data file as character(1) or NULL (by default). Only in case notion_of_fairness is 'equalised odds' do you require to give an ground truth variable 
+#' @param sensitive_attributes names of the sensitive attribute variables in your data file as character string or NULL (by default) t use all variables that are not the outcome or prediction and ground truth variables
+#' @param notion_of_fairness notion of fairness must be 'statistical parity' or 'equalized odds'
+#' @param ranking_mechanism ranking mechanism must be 'confidence' or 'magnitude'
+#' @param n_grp maximum number of groups in the report, numeric(1)
+#' @param ntree number of trees to model in partykit::cforest, numeric(1)
+#' @param alpha alpha argument passed to partykit::cforest, numeric(1)
+#' @param seed random seed number can be used for reproducibility of results, numeric(1)
+#' @param data_name name used in the file name of the resulted report character(1)
+#' @param dir directory to which to write the report
 #'
-#' @param file 
-#' @param outcome_variable 
-#' @param prediction_variable 
-#' @param ground_truth_variable 
-#' @param sensitive_attributes 
-#' @param notion_of_fairness 
-#' @param ranking_mechanism 
-#' @param n_grp 
-#' @param ntree 
-#' @param alpha 
-#'
-#' @return
+#' @return pdf report
 #' @export
 #'
 #' @examples
@@ -27,7 +45,8 @@ ald_audit <- function(file,
                       dir = here::here(""),
                       n_grp,
                       ntree,
-                      alpha) {
+                      alpha,
+                      seed = NULL) {
   
   reserved_colnames <- c("leaves_", "leaf_indicator_", "outcome", "prediction", "ground_truth", "error_type")
   
@@ -142,7 +161,10 @@ ald_audit <- function(file,
   cforest_formula <- stats::as.formula(paste0("outcome ~ ", paste(sen_attr, collapse = " + ")))
   
   # # random seed
-  # set.seed(2022)
+  if (!is.null(seed)) {
+    assertthat::assert_that(is.numeric(seed), !is.na(seed), msg = "Argument seed must be a valid integer")
+    set.seed(seed)
+  }
   
   # Train on a fixed data set, because later apply_split needs to know variables and positions!
   partitioning <- partykit::cforest(formula = cforest_formula,
