@@ -9,24 +9,7 @@ This repository contains the implementation of 'Automatic Location of Disparitie
 remotes::install_github("https://github.com/moritzvz/ald")
  ```
 
-ALD is dependent on several other packages for handling data, modeling and generating reports:
-
-- partykit
-- assertthat
-- magrittr
-- tidyselect
-- tibble
-- dplyr
-- tidyr
-- readr
-- rmarkdown
-- flextable
-- stringr
-- ggplot2
-- ggparty
-- cowplot
-- scales
-- hms
+ALD is dependent on several other packages for handling data, modeling and generating reports: partykit, assertthat, magrittr, tidyselect, tibble, dplyr, tidyr, readr, rmarkdown, flextable, stringr, ggplot2, ggparty, cowplot, scales, hms
 
 # Usage
 
