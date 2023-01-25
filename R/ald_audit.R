@@ -110,7 +110,7 @@ ald_audit <- function(file,
   assertthat::assert_that(ranking_mechanism %in% c("confidence", "magnitude"),
                           msg = "ranking_mechanism must be 'confidence' or 'magnitude'")
   
-  warning("TO DO: set limits for n_grp, n_tree and alpha")
+  # Optional to do: set limits for n_grp, n_tree and alpha
   assertthat::assert_that(is.numeric(n_grp), length(n_grp) == 1,
                           msg = "n_grp must be numeric(1)")
   

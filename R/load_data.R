@@ -40,7 +40,7 @@ load_data <- function(file, outcome, prediction, ground_truth, sen_attr, psi_met
       dataset$outcome <- dataset[[outcome]]
     }
     
-    warning("TO DO: restrictions on outcome variable? Double to integer? Check for NA values?")
+    # Optional to do: restrictions on outcome variable? Double to integer? Check for NA values?")
   } else if (psi_metric == "equalized odds") {
     assertthat::assert_that(
       prediction %in% col_names,
@@ -58,7 +58,7 @@ load_data <- function(file, outcome, prediction, ground_truth, sen_attr, psi_met
       dataset$ground_truth <- dataset[[ground_truth]]
     }
     
-    warning("TO DO: restrictions on prediction and ground truth variables? Double to integer? Check for NA values?")
+    # Optional to do: restrictions on prediction and ground truth variables? Double to integer? Check for NA values?")
     
     dataset <- dplyr::mutate(dataset, error_type = paste0(dplyr::if_else(ground_truth == 1, "t", "f"), 
                                                           dplyr::if_else(prediction == 1, "p", "n")))
@@ -100,7 +100,8 @@ load_data <- function(file, outcome, prediction, ground_truth, sen_attr, psi_met
   
   # partykit::cforest doesn't allow characters, they have to be factors
   dataset <- dplyr::mutate(dataset, dplyr::across(tidyselect::all_of(cols_chr), ~ as.factor(.)))
-  warning("TO DO: restrictions on sensitive attributes?")
+  
+  # Optional to do: are there restrictions on sensitive attributes?")
   
   
   list(dataset  = dataset,
