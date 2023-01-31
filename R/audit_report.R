@@ -52,7 +52,8 @@ export_audit_report <- function(results_df,
                               partitioning = partitioning, 
                               dataset      = dataset, 
                               psi_metric   = psi_metric, 
-                              sen_attr     = sen_attr)
+                              sen_attr     = sen_attr,
+                              n_grp        = n_grp)
   
   description <- paste0(
     "The following table comprises the ", n_grp, " groups most ",
@@ -99,7 +100,7 @@ export_audit_report <- function(results_df,
 #' @return
 #'
 #' @examples
-audit_report_trees <- function(results_df, partitioning, dataset, psi_metric, sen_attr) {
+audit_report_trees <- function(results_df, partitioning, dataset, psi_metric, sen_attr, n_grp) {
   
   is_pruned <- ""
   
@@ -219,7 +220,7 @@ visualize_tree <- function(results_df, t, ct, dataset, psi_metric){
     
     # inner nodes
     ggparty::geom_node_label(
-      mapping = ggplot2::aes(col = "black", fill = get_disp_color(metrics[metrics$node_id == id,]$disparity)),
+      mapping = ggplot2::aes(col = "black"), #, fill = get_disp_color(metrics[metrics$node_id == id,]$disparity)),
       line_list = list(# aes(label = paste("Subgroup:", id)),
         ggplot2::aes(label = paste("n:", metrics[metrics$node_id == id,]$n, "/",
                                    format(round(metrics[metrics$node_id == id,]$n_rel*100, 1), nsmall = 1), "%")),
@@ -238,7 +239,7 @@ visualize_tree <- function(results_df, t, ct, dataset, psi_metric){
       ids = "inner") +
     
     # terminal nodes
-    ggparty::geom_node_label(mapping = ggplot2::aes(col = splitvar, fill = get_disp_color(metrics[metrics$node_id == id,]$disparity)),
+    ggparty::geom_node_label(mapping = ggplot2::aes(col = splitvar), # , fill = get_disp_color(metrics[metrics$node_id == id,]$disparity)),
                     line_list = list(# aes(label = paste("Subgroup:", id)),
                       ggplot2::aes(label = paste("n:", metrics[metrics$node_id == id,]$n, "/",
                                         format(round(metrics[metrics$node_id == id,]$n_rel*100, 1), nsmall = 1), "%")),
