@@ -216,44 +216,88 @@ visualize_tree <- function(results_df, t, ct, dataset, psi_metric){
   # plot tree
   tree_plot <- ggparty::ggparty(ct) +
     ggparty::geom_edge() +
-    ggparty::geom_edge_label(size = 3) +
+    ggparty::geom_edge_label(size = 3) 
+  
+  for (r in seq_len(nrow(metrics))) {
+    if (!metrics$is_terminal[r]) {
+      tree_plot <- tree_plot +
+        ggparty::geom_node_label(
+          mapping = ggplot2::aes(col = "black"), #, fill = get_disp_color(metrics[metrics$node_id == id,]$disparity)),
+          line_list = list(# aes(label = paste("Subgroup:", id)),
+            ggplot2::aes(label = paste("n:", metrics[metrics$node_id == id,]$n, "/",
+                                       format(round(metrics[metrics$node_id == id,]$n_rel*100, 1), nsmall = 1), "%")),
+            ggplot2::aes(label = paste("Disparity:",
+                                       format(round(metrics[metrics$node_id == id,]$disparity, 3), nsmall = 3))),
+            
+            ggplot2::aes(label = paste("Split: \"", splitvar, "\""))
+          ),
+          line_gpar = list(# list(size = 8, col = "black", fontface = "plain", alignment = "left"),
+            list(size = 8, col = "black", fontface = "plain", alignment = "left"),
+            list(size = 8, col = "black", fontface = "plain", alignment = "left"),
+            list(size = 8, col = "black", fontface = "bold", alignment = "left")
+          ),
+          #label.fill = rbPal1(0.1), #"gray",
+          label.col = "black",
+          label.fill = get_disp_color(metrics$disparity[r])[[1]],
+          ids = r)
+    } else {
+      tree_plot <- tree_plot +
+        ggparty::geom_node_label(
+          mapping = ggplot2::aes(col = splitvar), # , fill = get_disp_color(metrics[metrics$node_id == id,]$disparity)),
+          line_list = list(# aes(label = paste("Subgroup:", id)),
+            ggplot2::aes(label = paste("n:", metrics[metrics$node_id == id,]$n, "/",
+                                       format(round(metrics[metrics$node_id == id,]$n_rel*100, 1), nsmall = 1), "%")),
+            ggplot2::aes(label = paste("Disparity:",
+                                       format(round(metrics[metrics$node_id == id,]$disparity, 3), nsmall = 3)))
+          ),
+          line_gpar = list(# list(size = 8, col = "black", fontface = "plain", alignment = "left"),
+            list(size = 8, col = "black", fontface = "plain", alignment = "left"),
+            list(size = 8, col = "black", fontface = "plain", alignment = "left")
+          ),
+          # label.fill = "green",
+          label.col = "black",
+          label.fill = get_disp_color(metrics$disparity[r])[[1]],
+          ids = r)
+    }
     
-    # inner nodes
-    ggparty::geom_node_label(
-      mapping = ggplot2::aes(col = "black"), #, fill = get_disp_color(metrics[metrics$node_id == id,]$disparity)),
-      line_list = list(# aes(label = paste("Subgroup:", id)),
-        ggplot2::aes(label = paste("n:", metrics[metrics$node_id == id,]$n, "/",
-                                   format(round(metrics[metrics$node_id == id,]$n_rel*100, 1), nsmall = 1), "%")),
-        ggplot2::aes(label = paste("Disparity:",
-                                   format(round(metrics[metrics$node_id == id,]$disparity, 3), nsmall = 3))),
-        
-        ggplot2::aes(label = paste("Split: \"", splitvar, "\""))
-      ),
-      line_gpar = list(# list(size = 8, col = "black", fontface = "plain", alignment = "left"),
-        list(size = 8, col = "black", fontface = "plain", alignment = "left"),
-        list(size = 8, col = "black", fontface = "plain", alignment = "left"),
-        list(size = 8, col = "black", fontface = "bold", alignment = "left")
-      ),
-      #label.fill = rbPal1(0.1), #"gray",
-      label.col = "black",
-      ids = "inner") +
+  }
     
-    # terminal nodes
-    ggparty::geom_node_label(mapping = ggplot2::aes(col = splitvar), # , fill = get_disp_color(metrics[metrics$node_id == id,]$disparity)),
-                    line_list = list(# aes(label = paste("Subgroup:", id)),
-                      ggplot2::aes(label = paste("n:", metrics[metrics$node_id == id,]$n, "/",
-                                        format(round(metrics[metrics$node_id == id,]$n_rel*100, 1), nsmall = 1), "%")),
-                      ggplot2::aes(label = paste("Disparity:",
-                                        format(round(metrics[metrics$node_id == id,]$disparity, 3), nsmall = 3)))
-                    ),
-                    line_gpar = list(# list(size = 8, col = "black", fontface = "plain", alignment = "left"),
-                      list(size = 8, col = "black", fontface = "plain", alignment = "left"),
-                      list(size = 8, col = "black", fontface = "plain", alignment = "left")
-                    ),
-                    # label.fill = "green",
-                    label.col = "black",
-                    ids = "terminal") +
-    
+    # # inner nodes
+    # ggparty::geom_node_label(
+    #   mapping = ggplot2::aes(col = "black"), #, fill = get_disp_color(metrics[metrics$node_id == id,]$disparity)),
+    #   line_list = list(# aes(label = paste("Subgroup:", id)),
+    #     ggplot2::aes(label = paste("n:", metrics[metrics$node_id == id,]$n, "/",
+    #                                format(round(metrics[metrics$node_id == id,]$n_rel*100, 1), nsmall = 1), "%")),
+    #     ggplot2::aes(label = paste("Disparity:",
+    #                                format(round(metrics[metrics$node_id == id,]$disparity, 3), nsmall = 3))),
+    #     
+    #     ggplot2::aes(label = paste("Split: \"", splitvar, "\""))
+    #   ),
+    #   line_gpar = list(# list(size = 8, col = "black", fontface = "plain", alignment = "left"),
+    #     list(size = 8, col = "black", fontface = "plain", alignment = "left"),
+    #     list(size = 8, col = "black", fontface = "plain", alignment = "left"),
+    #     list(size = 8, col = "black", fontface = "bold", alignment = "left")
+    #   ),
+    #   #label.fill = rbPal1(0.1), #"gray",
+    #   label.col = "orange",
+    #   ids = "inner") +
+    # 
+    # # terminal nodes
+    # ggparty::geom_node_label(mapping = ggplot2::aes(col = splitvar), # , fill = get_disp_color(metrics[metrics$node_id == id,]$disparity)),
+    #                 line_list = list(# aes(label = paste("Subgroup:", id)),
+    #                   ggplot2::aes(label = paste("n:", metrics[metrics$node_id == id,]$n, "/",
+    #                                     format(round(metrics[metrics$node_id == id,]$n_rel*100, 1), nsmall = 1), "%")),
+    #                   ggplot2::aes(label = paste("Disparity:",
+    #                                     format(round(metrics[metrics$node_id == id,]$disparity, 3), nsmall = 3)))
+    #                 ),
+    #                 line_gpar = list(# list(size = 8, col = "black", fontface = "plain", alignment = "left"),
+    #                   list(size = 8, col = "black", fontface = "plain", alignment = "left"),
+    #                   list(size = 8, col = "black", fontface = "plain", alignment = "left")
+    #                 ),
+    #                 # label.fill = "green",
+    #                 label.col = "black",
+    #                 ids = "terminal") +
+  tree_plot <- tree_plot + 
     ggplot2::theme(legend.position = "none")
   
   # plot heatmap legend
@@ -333,8 +377,8 @@ get_disp_color <- function(disparity) {
 #'  metrics <- rec_nodes(cnode, dataset, dataset, psi_metric = psi_metric, first = TRUE)
 rec_nodes <- function(cnode, data, subset, psi_metric, first = FALSE) {
   if (first) {
-    metrics <- data.frame(cnode$id, 0.0, nrow(subset), nrow(subset)/nrow(data))
-    names(metrics) <- c("node_id", "disparity", "n", "n_rel")
+    metrics <- data.frame(cnode$id, 0.0, nrow(subset), nrow(subset)/nrow(data), partykit::is.terminal(cnode))
+    names(metrics) <- c("node_id", "disparity", "n", "n_rel", "is_terminal")
   } else {
     rest_ids <- setdiff(rownames(data), rownames(subset))
     rest <- data[rest_ids,]
@@ -345,8 +389,8 @@ rec_nodes <- function(cnode, data, subset, psi_metric, first = FALSE) {
     } else{
       stop("The fairness metric provided is not implemented.")
     }
-    metric_new <- data.frame(cnode$id, psi_computed, nrow(subset), nrow(subset)/nrow(data))
-    names(metric_new) <- c("node_id", "disparity", "n", "n_rel")
+    metric_new <- data.frame(cnode$id, psi_computed, nrow(subset), nrow(subset)/nrow(data), partykit::is.terminal(cnode))
+    names(metric_new) <- c("node_id", "disparity", "n", "n_rel", "is_terminal")
     metrics <- metric_new
     # metrics <- rbind(metrics, metric_new)
   }
