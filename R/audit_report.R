@@ -216,7 +216,8 @@ visualize_tree <- function(results_df, t, ct, dataset, psi_metric){
   # plot tree
   tree_plot <- ggparty::ggparty(ct) +
     ggparty::geom_edge() +
-    ggparty::geom_edge_label(size = 3) 
+    ggparty::geom_edge_label(size = 3) + 
+    ggplot2::theme(legend.position = "none")
   
   for (r in seq_len(nrow(metrics))) {
     if (!metrics$is_terminal[r]) {
@@ -261,44 +262,8 @@ visualize_tree <- function(results_df, t, ct, dataset, psi_metric){
     }
     
   }
-    
-    # # inner nodes
-    # ggparty::geom_node_label(
-    #   mapping = ggplot2::aes(col = "black"), #, fill = get_disp_color(metrics[metrics$node_id == id,]$disparity)),
-    #   line_list = list(# aes(label = paste("Subgroup:", id)),
-    #     ggplot2::aes(label = paste("n:", metrics[metrics$node_id == id,]$n, "/",
-    #                                format(round(metrics[metrics$node_id == id,]$n_rel*100, 1), nsmall = 1), "%")),
-    #     ggplot2::aes(label = paste("Disparity:",
-    #                                format(round(metrics[metrics$node_id == id,]$disparity, 3), nsmall = 3))),
-    #     
-    #     ggplot2::aes(label = paste("Split: \"", splitvar, "\""))
-    #   ),
-    #   line_gpar = list(# list(size = 8, col = "black", fontface = "plain", alignment = "left"),
-    #     list(size = 8, col = "black", fontface = "plain", alignment = "left"),
-    #     list(size = 8, col = "black", fontface = "plain", alignment = "left"),
-    #     list(size = 8, col = "black", fontface = "bold", alignment = "left")
-    #   ),
-    #   #label.fill = rbPal1(0.1), #"gray",
-    #   label.col = "orange",
-    #   ids = "inner") +
-    # 
-    # # terminal nodes
-    # ggparty::geom_node_label(mapping = ggplot2::aes(col = splitvar), # , fill = get_disp_color(metrics[metrics$node_id == id,]$disparity)),
-    #                 line_list = list(# aes(label = paste("Subgroup:", id)),
-    #                   ggplot2::aes(label = paste("n:", metrics[metrics$node_id == id,]$n, "/",
-    #                                     format(round(metrics[metrics$node_id == id,]$n_rel*100, 1), nsmall = 1), "%")),
-    #                   ggplot2::aes(label = paste("Disparity:",
-    #                                     format(round(metrics[metrics$node_id == id,]$disparity, 3), nsmall = 3)))
-    #                 ),
-    #                 line_gpar = list(# list(size = 8, col = "black", fontface = "plain", alignment = "left"),
-    #                   list(size = 8, col = "black", fontface = "plain", alignment = "left"),
-    #                   list(size = 8, col = "black", fontface = "plain", alignment = "left")
-    #                 ),
-    #                 # label.fill = "green",
-    #                 label.col = "black",
-    #                 ids = "terminal") +
-  tree_plot <- tree_plot + 
-    ggplot2::theme(legend.position = "none")
+  
+  # tree_plot <- tree_plot
   
   # plot heatmap legend
   heat_leg_data = expand.grid(X=1, Y=(1:100)/100)
