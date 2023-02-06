@@ -1,12 +1,16 @@
 Package: ald
 Type: Package
-Title: What the Package Does (Title Case)
+Title: This package provides an R function for locating (unfair) disparities in datasets.
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: von Zahn et al.
+Maintainer: Moritz von Zahn <vzahn@wiwi.uni-frankfurt.de>
+Description: This package holds the implementation of the data-driven framework "Automatic Location of Disparities (ALD)" which aims at locating (unfair) disparities in machine learning. ALD is
+    - applicable directly on datasets (e.g., logged data from machine learning classifiers)
+    - operates on different definitions of disparities (statistical parity or equalized odds)
+    - deals with both categorical and continuous predictors
+    - is suitable to handle high-dimensional settings
+    - can identify disparities due to intersectionality where disparities arise from complex and multi-way interactions (e.g., age above 60 and female).
+License: <>
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
