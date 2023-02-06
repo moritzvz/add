@@ -12,6 +12,7 @@ ald_audit(
   sensitive_attributes = NULL,
   notion_of_fairness,
   ranking_mechanism,
+  adjust_method = "BH",
   data_name = NULL,
   dir = here::here(""),
   n_grp,
@@ -34,6 +35,8 @@ ald_audit(
 \item{notion_of_fairness}{notion of fairness must be 'statistical parity' or 'equalized odds'}
 
 \item{ranking_mechanism}{ranking mechanism must be 'confidence' or 'magnitude'}
+
+\item{adjust_method}{adjust method must be 'bonferroni' or 'BH' (by default)}
 
 \item{data_name}{name used in the file name of the resulted report character(1)}
 
@@ -62,6 +65,7 @@ The ALD audit:
   \item requires a maximum number of groups in the report (n_grp)
   \item requires a number of trees to model in partykit::cforest (ntree)
   \item requires a alpha argument passed to partykit::cforest (alpha)
+  \item optionally takes a adjustment method ("BH" Benjamini-Hochberg by default) to pass to stats::p.adjust (adjust_method)
   \item optionally takes a random seed number that can be used for reproducibility of results
   \item writes a report to the directory that you set with the dir argument, with data_name argument used in the name
 }

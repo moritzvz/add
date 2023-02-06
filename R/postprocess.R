@@ -9,15 +9,16 @@
 #'
 #' @param results_df data frame, results from analyse_unique_leaves() 
 #' @param ranking character(1)
+#' @param adj_method character(1)
 #'
 #' @return
-postprocess_results <- function(results_df, ranking) {
+postprocess_results <- function(results_df, ranking, adj_method) {
   
   results_df <- dplyr::mutate(results_df, group_condition = purrr::map_chr(group_condition, clean_condition_str))
   
   results_df <- results_df[!duplicated(results_df$group_condition), ]
   
-  results_df <- dplyr::mutate(results_df, disparity_confidence = stats::p.adjust(disparity_confidence, p.adjust.methods[2]))
+  results_df <- dplyr::mutate(results_df, disparity_confidence = stats::p.adjust(disparity_confidence, adj_method))
   
   results_df <- rank_results(results_df = results_df, ranking = ranking)
   

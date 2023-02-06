@@ -1,2 +1,5 @@
 .RData
 .Rhistory
+.idea
+test.R
+/output/audit_report_compas.pdf

@@ -24,6 +24,7 @@ The ALD audit:
 - requires a maximum number of groups in the report (n_grp)
 - requires a number of trees to model in partykit::cforest (ntree)
 - requires a alpha argument passed to partykit::cforest (alpha)
+- optionally takes a p-value adjustment method to pass to stats::p.adjust (adjust_method), either "BH" (Benjamini-Hochberg, by default) or "bonferroni" (Bonferroni correction).
 - optionally takes a random seed number that can be used for reproducibility of results
 - writes a report to the directory that you set with the dir argument, with data_name argument used in the name
 

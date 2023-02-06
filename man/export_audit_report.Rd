@@ -9,6 +9,7 @@ export_audit_report(
   n_grp,
   psi_metric,
   ranking,
+  adj_method,
   sen_attr,
   partitioning,
   dataset,
@@ -24,6 +25,8 @@ export_audit_report(
 \item{psi_metric}{character(1)}
 
 \item{ranking}{character(1)}
+
+\item{adj_method}{character(1)}
 
 \item{sen_attr}{character()}
 

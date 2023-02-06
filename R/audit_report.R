@@ -10,6 +10,7 @@
 #' @param n_grp numeric(1),number of groups
 #' @param psi_metric character(1)
 #' @param ranking character(1)
+#' @param adj_method character(1)
 #' @param sen_attr character()
 #' @param partitioning result from partykit::cforest()
 #' @param dataset data frame that the cforest was trained on
@@ -20,7 +21,8 @@
 export_audit_report <- function(results_df, 
                                 n_grp, 
                                 psi_metric, 
-                                ranking, 
+                                ranking,
+                                adj_method,
                                 sen_attr, 
                                 partitioning, 
                                 dataset, 
@@ -55,12 +57,15 @@ export_audit_report <- function(results_df,
                               sen_attr     = sen_attr,
                               n_grp        = n_grp)
   
+  adj_method_str <- if (adj_method == "BH") "Benjamini & Hochberg" else "Bonferroni"
+  
   description <- paste0(
     "The following table comprises the ", n_grp, " groups most ",
     "affected by disparate outcomes. Disparate outcomes are ", 
-    "defined by ", psi_metric, " and groups are ranked based on ",
-    ranking, " (of the disparity). Visualizations of ",
-    "trees ", trees$is_pruned," that generated the groups are provided ",
+    "defined by ", psi_metric, ", groups are ranked based on ",
+    ranking, " (of the disparity), and p-values are adjusted for multiple ",
+    "hypothesis testing based on ", adj_method_str ," correction. Visualizations ", 
+    " of trees ", trees$is_pruned," that generated the groups are provided ",
     "on the following pages.")
   
   table <- audit_report_table(results_df = results_df, 

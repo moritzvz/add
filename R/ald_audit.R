@@ -12,6 +12,7 @@
 #'   \item requires a maximum number of groups in the report (n_grp)
 #'   \item requires a number of trees to model in partykit::cforest (ntree)
 #'   \item requires a alpha argument passed to partykit::cforest (alpha)
+#'   \item optionally takes a p-value adjustment method to pass to stats::p.adjust (adjust_method), either "BH" (Benjamini-Hochberg, by default) or "bonferroni" (Bonferroni correction).
 #'   \item optionally takes a random seed number that can be used for reproducibility of results
 #'   \item writes a report to the directory that you set with the dir argument, with data_name argument used in the name
 #' }
@@ -23,6 +24,7 @@
 #' @param sensitive_attributes names of the sensitive attribute variables in your data file as character string or NULL (by default) t use all variables that are not the outcome or prediction and ground truth variables
 #' @param notion_of_fairness notion of fairness must be 'statistical parity' or 'equalized odds'
 #' @param ranking_mechanism ranking mechanism must be 'confidence' or 'magnitude'
+#' @param adjust_method adjust method must be 'bonferroni' or 'BH' (by default)
 #' @param n_grp maximum number of groups in the report, numeric(1)
 #' @param ntree number of trees to model in partykit::cforest, numeric(1)
 #' @param alpha alpha argument passed to partykit::cforest, numeric(1)
@@ -41,6 +43,7 @@ ald_audit <- function(file,
                       sensitive_attributes = NULL,
                       notion_of_fairness,
                       ranking_mechanism,
+                      adjust_method = "BH",
                       data_name = NULL,
                       dir = here::here(""),
                       n_grp,
@@ -139,6 +142,7 @@ ald_audit <- function(file,
   sen_attr     <- sensitive_attributes
   psi_metric   <- notion_of_fairness
   ranking      <- ranking_mechanism
+  adj_method   <- adjust_method
   # n_grp      <- n_grp
   # ntree      <- ntree
   # alpha      <- alpha
@@ -180,7 +184,7 @@ ald_audit <- function(file,
   
   
   ### Post process
-  results_df <- postprocess_results(results_df = results_df, ranking = ranking)
+  results_df <- postprocess_results(results_df = results_df, ranking = ranking, adj_method = adj_method)
   
   
   ### Generate report
@@ -188,7 +192,8 @@ ald_audit <- function(file,
                       n_grp        = n_grp, 
                       sen_attr     = sen_attr,
                       psi_metric   = psi_metric, 
-                      ranking      = ranking, 
+                      ranking      = ranking,
+                      adj_method   = adj_method,
                       partitioning = partitioning, 
                       dataset      = dataset, 
                       dir          = dir,

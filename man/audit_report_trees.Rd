@@ -4,7 +4,14 @@
 \alias{audit_report_trees}
 \title{Create audit report trees}
 \usage{
-audit_report_trees(results_df, partitioning, dataset, psi_metric, sen_attr)
+audit_report_trees(
+  results_df,
+  partitioning,
+  dataset,
+  psi_metric,
+  sen_attr,
+  n_grp
+)
 }
 \arguments{
 \item{results_df}{data frame, results from the analysis}

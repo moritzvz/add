@@ -4,12 +4,14 @@
 \alias{postprocess_results}
 \title{Postprocess results}
 \usage{
-postprocess_results(results_df, ranking)
+postprocess_results(results_df, ranking, adj_method)
 }
 \arguments{
 \item{results_df}{data frame, results from analyse_unique_leaves()}
 
 \item{ranking}{character(1)}
+
+\item{adj_method}{character(1)}
 }
 \description{
 - Clean each group_condition
