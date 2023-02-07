@@ -13,7 +13,7 @@
 #' @param adj_method character(1)
 #' @param sen_attr character()
 #' @param partitioning result from partykit::cforest()
-#' @param dataset data frame that the cforest was trained on
+#' @param dataset dataset to evaluate subgroups
 #' @param data_name character(1) name of the dataset
 #' @param dir character(1) name of directory to write to
 #'
@@ -98,7 +98,7 @@ export_audit_report <- function(results_df,
 #'
 #' @param results_df data frame, results from the analysis
 #' @param partitioning result from partykit::cforest()
-#' @param dataset data frame that the cforest was trained on
+#' @param dataset dataset to evaluate subgroups
 #' @param psi_metric character(1)
 #' @param sen_attr character()
 #'
@@ -140,7 +140,7 @@ audit_report_trees <- function(results_df, partitioning, dataset, psi_metric, se
 #'
 #' @param results_df data frame, results from the analysis
 #' @param n_grp numeric(1), number of groups
-#' @param dataset data frame that the cforest was trained on
+#' @param dataset data frame used to evaluate subgroups
 #'
 #' @return
 #'
@@ -200,7 +200,7 @@ get_node_depths <- function(tree) {
 #' @param results_df data frame, results from the analysis
 #' @param t numeric(1) tree number
 #' @param ct partykit tree
-#' @param dataset data frame that the cforest was trained on
+#' @param dataset dataset to evaluate subgroups
 #' @param psi_metric character(1)
 #'
 #' @return
@@ -338,7 +338,7 @@ get_disp_color <- function(disparity) {
 #' Recursively compute metrics for all nodes (not only leaves)
 #'
 #' @param cnode node
-#' @param data full dataset
+#' @param data dataset to evaluate subgroups
 #' @param subset subset of node
 #' @param psi_metric character(1)
 #' @param first logical(1) Initial computation of recursive flow  

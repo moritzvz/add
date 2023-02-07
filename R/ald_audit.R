@@ -161,24 +161,29 @@ ald_audit <- function(file,
   sen_attr <- data_load$sen_attr
   dataset  <- data_load$dataset
   
-  ### Fit random forest of conditional inference trees
-  cforest_formula <- stats::as.formula(paste0("outcome ~ ", paste(sen_attr, collapse = " + ")))
-  
   # # random seed
   if (!is.null(seed)) {
     assertthat::assert_that(is.numeric(seed), !is.na(seed), msg = "Argument seed must be a valid integer")
     set.seed(seed)
   }
   
+  ### split data
+  dataset_splits <- split_data(dataset = dataset)
+  dataset_1 <- dataset_splits$dataset_1
+  dataset_2 <- dataset_splits$dataset_2
+  
+  ### Fit random forest of conditional inference trees
+  cforest_formula <- stats::as.formula(paste0("outcome ~ ", paste(sen_attr, collapse = " + ")))
+
   # Train on a fixed data set, because later apply_split needs to know variables and positions!
   partitioning <- partykit::cforest(formula = cforest_formula,
-                                    data    = dataset, 
+                                    data    = dataset_1, 
                                     ntree   = ntree, 
                                     alpha   = alpha)
   
   ### Analyse unique leaves
   results_df <- analyse_unique_leaves(partitioning = partitioning,
-                                      dataset      = dataset,
+                                      dataset      = dataset_2,
                                       psi_metric   = psi_metric,
                                       ntree        = ntree)
   
@@ -195,7 +200,7 @@ ald_audit <- function(file,
                       ranking      = ranking,
                       adj_method   = adj_method,
                       partitioning = partitioning, 
-                      dataset      = dataset, 
+                      dataset      = dataset_2, 
                       dir          = dir,
                       data_name    = data_name)
 }

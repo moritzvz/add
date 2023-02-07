@@ -33,6 +33,8 @@ analyse_unique_leaves <- function(partitioning, dataset, psi_metric, ntree) {
       # get condition of leaf (subgroup description)
       condition <- conditions[as.character(leaf)]
       
+      # print(condition)
+      
       # get individuals in leaf (subgroup)
       dataset_leaf <- dplyr::mutate(dataset_tree, leaf_indicator_ = leaves_ == leaf)
       # leaf_indicator <- leaves == leaf
@@ -120,6 +122,8 @@ compute_magnit_and_confid <- function(.data, psi_metric){
     
     fpr_diff <- leaf_errors$fpr - outside_errors$fpr
     fnr_diff <- (1 - leaf_errors$tpr) - (1 - outside_errors$tpr)
+    
+    # print(paste0("fpr diff ", fpr_diff, ";  fnr diff", fnr_diff))
     
     # calculate confidence (uncorrected) of disparity (absolute odds difference)
     fp_test <- chisq.test(x = matrix(c(leaf_errors$fp, leaf_errors$tn,

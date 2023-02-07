@@ -103,8 +103,24 @@ load_data <- function(file, outcome, prediction, ground_truth, sen_attr, psi_met
   
   # Optional to do: are there restrictions on sensitive attributes?")
   
-  
   list(dataset  = dataset,
        sen_attr = sen_attr)
 }
 
+
+#' Split data
+#' 
+#' Randomly split dataset into two halves
+#'
+#' @param dataset prepared data frame
+#'
+#' @return
+split_data <- function(dataset) {
+  
+  # perform split on data
+  dataset_1_index <- sample(seq_len(nrow(dataset)),size = floor(0.5*nrow(dataset)))
+  
+  # return both splits
+  list(dataset_1 = dataset[dataset_1_index,],
+       dataset_2 = dataset[-dataset_1_index,])
+}
