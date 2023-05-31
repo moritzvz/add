@@ -58,7 +58,7 @@ ald_audit(
 # Citation
 Please consider citing us if you find this helpful for your work:
 ```
-@misc{vonZahn.2022,  
+@misc{vonZahn.2023,  
     author       = {von Zahn, Moritz and Hinz, Oliver and Feuerriegel, Stefan},  
     title        = {Locating disparities in machine learning},
     year         = 2022,  
