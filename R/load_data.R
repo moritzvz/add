@@ -98,7 +98,7 @@ load_data <- function(file, outcome, prediction, ground_truth, sen_attr, psi_met
   }
   
   
-  # partykit::cforest doesn't allow characters, they have to be factors
+  # convert to factor since partykit::cforest does not allow characters
   dataset <- dplyr::mutate(dataset, dplyr::across(tidyselect::all_of(cols_chr), ~ as.factor(.)))
   
   # Optional to do: are there restrictions on sensitive attributes?")
