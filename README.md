@@ -9,13 +9,13 @@ This repository contains the implementation of 'Automatic Location of Disparitie
 remotes::install_github("https://github.com/moritzvz/ald")
  ```
 
-ALD is dependent on several other packages for handling data, modeling and generating reports: partykit, assertthat, magrittr, tidyselect, tibble, dplyr, tidyr, readr, rmarkdown, flextable, stringr, ggplot2, ggparty, cowplot, scales, hms
+ALD is dependent on several other packages for handling data, modeling, and generating reports: partykit, assertthat, magrittr, tidyselect, tibble, dplyr, tidyr, readr, rmarkdown, flextable, stringr, ggplot2, ggparty, cowplot, scales, hms
 
 # Usage
 
 The ALD audit:
 
-- is performed on a dataset of your choice, the dataset must be provided as a .csv file
+- is performed on a dataset of your choice that must be provided as a .csv file
 - requires notion of fairness to be set to 'statistical parity' or 'equalized odds'
  + in case of 'statistical parity' you must set the outcome_variable argument to the name of the outcome variable in your dataset
  + for 'equalized odds' you must set the prediction_variable and ground_truth_variable arguments to the names of the prediction and ground truth variables in your dataset
