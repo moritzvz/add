@@ -58,10 +58,12 @@ ald_audit(
 # Citation
 Please consider citing us if you find this helpful for your work:
 ```
-@misc{vonZahn.2023,  
-    author       = {von Zahn, Moritz and Hinz, Oliver and Feuerriegel, Stefan},  
-    title        = {Locating disparities in machine learning},
-    year         = 2022,  
-    url          = {https://github.com/moritzvz/ald}  
-    }
+@inproceedings{vonZahn.2023,
+  title={Locating disparities in machine learning},
+  author={von Zahn, Moritz and Hinz, Oliver and Feuerriegel, Stefan},
+  booktitle={2023 IEEE International Conference on Big Data (BigData)},
+  pages={1883--1894},
+  year={2023},
+  organization={IEEE}
+}
  ```
